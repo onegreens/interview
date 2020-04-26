@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Slf4j
 @Transactional
-@Service("bookContentService")
+@Service("bookService")
 public class BookServiceImpl implements BookService {
 
     @Autowired

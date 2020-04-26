@@ -1,3 +1,27 @@
 server:
 #  端口
   port: 8090
+
+spring:
+  profiles:
+    active: prod
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/interview?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+
+idGenerator:
+  workId: 1
+  dataId: 1
+
+web:
+  file:
+    path: D:\interview\interview\java_project\src\main\web

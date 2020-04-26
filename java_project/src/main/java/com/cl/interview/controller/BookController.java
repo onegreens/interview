@@ -22,10 +22,10 @@ import static com.cl.interview.common.Constant.LOG_NAME;
 @Slf4j
 @RestController
 
-@RequestMapping("/question")
+@RequestMapping("/book")
 public class BookController {
     @Autowired
-    BookService service;
+    BookService bookService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
@@ -33,7 +33,7 @@ public class BookController {
         HttpResp resp = new HttpResp();
         BookPo po = new BookPo();
         try {
-            resp.setData(service.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
+            resp.setData(bookService.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
         } catch (Exception e) {
             resp.setCode(IoTErrorCode.server_error.getErrorCode());
             resp.setMessage("习题信息列表 查询失败，数据库出错 e= " + e.getMessage());
@@ -51,7 +51,7 @@ public class BookController {
         request.setAttribute(LOG_NAME, "创建习题信息");
         request.setAttribute("token", token);
 
-        return service.create(dto);
+        return bookService.create(dto);
     }
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
@@ -59,7 +59,7 @@ public class BookController {
     public HttpResp deleteQuestionPo(@PathVariable(value = "id") Integer id,
                                      @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
-        BookPo po = service.getOne(id);
+        BookPo po = bookService.getOne(id);
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
             resp.setMessage("删除习题信息失败，习题信息不存在");
@@ -68,7 +68,7 @@ public class BookController {
 
         request.setAttribute(LOG_NAME, "删除习题信息 " + po.getId());
         request.setAttribute("token", token);
-        service.delete(id);
+        bookService.delete(id);
 
         return resp;
     }
@@ -80,14 +80,14 @@ public class BookController {
 
         request.setAttribute(LOG_NAME, "编辑习题信息  " + dto.getId());
         request.setAttribute("token", token);
-        return service.update(dto);
+        return bookService.update(dto);
     }
 
     @RequestMapping(value = "/doSerializable", method = RequestMethod.POST)
     public HttpResp doSerializable(@RequestHeader(value = "Authorization") String token,
                                    HttpServletRequest request) {
         HttpResp resp = new HttpResp();
-        service.doSerializable();
+        bookService.doSerializable();
         return resp;
     }
 
@@ -111,7 +111,7 @@ public class BookController {
                 Iterator<String> iterator = multipartRequest.getFileNames();
                 while (iterator.hasNext()) {
                     MultipartFile mf = multipartRequest.getFile(iterator.next());
-                    service.saveByFile(mf);
+                    bookService.saveByFile(mf);
                 }
             }
         } catch (Exception e) {

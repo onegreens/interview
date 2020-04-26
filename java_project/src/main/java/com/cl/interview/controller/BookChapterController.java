@@ -22,10 +22,10 @@ import static com.cl.interview.common.Constant.LOG_NAME;
 @Slf4j
 @RestController
 
-@RequestMapping("/book")
+@RequestMapping("/bookchapter")
 public class BookChapterController {
     @Autowired
-    BookChapterService service;
+    BookChapterService bookChapterService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
@@ -33,7 +33,7 @@ public class BookChapterController {
         HttpResp resp = new HttpResp();
         BookChapterPo po = new BookChapterPo();
         try {
-            resp.setData(service.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
+            resp.setData(bookChapterService.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
         } catch (Exception e) {
             resp.setCode(IoTErrorCode.server_error.getErrorCode());
             resp.setMessage("书籍信息列表 查询失败，数据库出错 e= " + e.getMessage());
@@ -46,7 +46,7 @@ public class BookChapterController {
                          @RequestHeader(value = "Authorization", required = false) String token) {
         HttpResp resp = new HttpResp();
         try {
-            resp.setData(service.treeData());
+            resp.setData(bookChapterService.treeData());
         } catch (Exception e) {
             resp.setCode(IoTErrorCode.server_error.getErrorCode());
             resp.setMessage("书籍信息列表 查询失败，数据库出错 e= " + e.getMessage());
@@ -62,7 +62,7 @@ public class BookChapterController {
         request.setAttribute(LOG_NAME, "创建书籍信息");
         request.setAttribute("token", token);
 
-        return service.create(dto);
+        return bookChapterService.create(dto);
     }
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
@@ -70,7 +70,7 @@ public class BookChapterController {
     public HttpResp deleteBookPo(@PathVariable(value = "id") Integer id,
                                      @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
-        BookChapterPo po = service.getOne(id);
+        BookChapterPo po = bookChapterService.getOne(id);
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
             resp.setMessage("删除书籍信息失败，书籍信息不存在");
@@ -79,7 +79,7 @@ public class BookChapterController {
 
         request.setAttribute(LOG_NAME, "删除书籍信息 " + po.getId());
         request.setAttribute("token", token);
-        service.delete(id);
+        bookChapterService.delete(id);
 
         return resp;
     }
@@ -91,14 +91,14 @@ public class BookChapterController {
 
         request.setAttribute(LOG_NAME, "编辑书籍信息  " + dto.getId());
         request.setAttribute("token", token);
-        return service.update(dto);
+        return bookChapterService.update(dto);
     }
 
     @RequestMapping(value = "/doSerializable", method = RequestMethod.POST)
     public HttpResp doSerializable(@RequestHeader(value = "Authorization") String token,
                                    HttpServletRequest request) {
         HttpResp resp = new HttpResp();
-        service.doSerializable();
+        bookChapterService.doSerializable();
         return resp;
     }
 
@@ -125,7 +125,7 @@ public class BookChapterController {
                 Iterator<String> iterator = multipartRequest.getFileNames();
                 while (iterator.hasNext()) {
                     MultipartFile mf = multipartRequest.getFile(iterator.next());
-                    service.saveByFile(mf);
+                    bookChapterService.saveByFile(mf);
                 }
             }
         } catch (Exception e) {

@@ -23,7 +23,6 @@ import static com.cl.interview.common.Constant.LOG_NAME;
 
 @Slf4j
 @RestController
-
 @RequestMapping("/question")
 public class QuestionController {
     @Autowired
@@ -46,7 +45,6 @@ public class QuestionController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-
     public HttpResp create(@RequestBody QuestionDto dto, HttpServletRequest request,
                            @RequestHeader(value = "Authorization") String token) {
 

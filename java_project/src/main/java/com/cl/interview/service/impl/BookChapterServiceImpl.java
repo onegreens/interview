@@ -27,7 +27,7 @@ import java.util.*;
 
 @Slf4j
 @Transactional
-@Service("bookService")
+@Service("bookChapterService")
 public class BookChapterServiceImpl implements BookChapterService {
 
     private static List<BookChapterPo> posCache;

@@ -10,8 +10,6 @@ import java.util.Date;
 @Data
 public class BookDto implements ToObject<BookPo> {
 
-
-
     private Integer id;
     private String name;
     private Integer user_id;

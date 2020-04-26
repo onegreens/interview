@@ -21,7 +21,7 @@ public interface BookChapterService extends CommonService<BookChapterPo> {
      * @param orderBysList
      * @return
      */
-    public Page getDataByPage(int pageNo, int pageSize, BookChapterPo obj, List<String> orderBysList, String search);
+    Page getDataByPage(int pageNo, int pageSize, BookChapterPo obj, List<String> orderBysList, String search);
 
 
     HttpResp create(BookChapterDto dto);
