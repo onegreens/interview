@@ -1,0 +1,38 @@
+html,
+body {
+  height: 100%;
+}
+a,
+span {
+  font-weight: 900;
+  text-decoration: none;
+}
+ul {
+  list-style: none;
+}
+input {
+  font-size: 20px;
+  text-indent: 10px;
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+img {
+  display: block;
+}
+.el-carousel__container {
+  height: 100%;
+}
+.el-carousel__container img {
+  height: 100%;
+  width: 100%;
+}
+.el-table .cell,
+.el-table th div,
+.el-table--border td:first-child .cell,
+.el-table--border th:first-child .cell {
+  text-align: center;
+}
+.el-table-filter {
+  text-align: left;
+}

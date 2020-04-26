@@ -1,0 +1,5 @@
+server:
+## 地址前缀
+#  context-path: /learnSpringBoot
+#  端口
+  port: 8090
