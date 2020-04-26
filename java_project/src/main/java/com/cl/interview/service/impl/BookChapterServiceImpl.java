@@ -5,11 +5,12 @@ import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.common.Page;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
+import com.cl.interview.dao.BookChapterDao;
 import com.cl.interview.dao.BookDao;
-import com.cl.interview.dto.BookDto;
-import com.cl.interview.entity.BookEntity;
-import com.cl.interview.po.BookPo;
-import com.cl.interview.service.BookService;
+import com.cl.interview.dto.BookChapterDto;
+import com.cl.interview.entity.BookChapterEntity;
+import com.cl.interview.po.BookChapterPo;
+import com.cl.interview.service.BookChapterService;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
@@ -22,18 +23,17 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
-@Service("bookContentService")
-public class BookServiceImpl implements BookService {
+@Service("bookService")
+public class BookChapterServiceImpl implements BookChapterService {
+
+    private static List<BookChapterPo> posCache;
 
     @Autowired
-    BookDao dao;
+    BookChapterDao dao;
 
     @Autowired
     BaseConfig config;
@@ -42,50 +42,70 @@ public class BookServiceImpl implements BookService {
     private BaseDao baseDao;
 
     @Override
-    public List<BookPo> findAll() {
+    public List<BookChapterPo> findAll() {
         return DaoUtil.convertDataList(dao.findAll());
     }
 
     @Override
-    public BookPo save(BookPo obj) {
+    public BookChapterPo save(BookChapterPo obj) {
+//        if (obj.getId() == null || obj.getId() == 0)
+//            obj.setId(IdGenerator.nextId());
+        if (obj.getParent() == null) {
+            obj.setParent(new BookChapterPo(0));
+        } else if (obj.getParent().getId() == null) {
+            obj.getParent().setId(0);
+        }
+        if (obj.getLevel() == null) {
+            if (obj.getParent().getLevel() == null) {
+                obj.setLevel(1);
+            } else {
+                BookChapterPo parent = getOne(obj.getParent().getId());
+                obj.setLevel(parent.getLevel() + 1);
+            }
+        }
         obj.setCreateTime(Calendar.getInstance().getTime());
-        return dao.save(obj.toObject()).toObject();
+        BookChapterEntity entity = obj.toObject();
+        return dao.save(entity).toObject();
     }
 
     @Override
     public void delete(Integer id) {
         dao.deleteById(id);
+        this.refreshCache();
     }
 
     @Override
-    public BookPo getOne(Integer id) {
+    public BookChapterPo getOne(Integer id) {
         return dao.getOne(id).toObject();
     }
 
     @Override
-    public void delete(Iterable<BookPo> entities) {
+    public void delete(Iterable<BookChapterPo> entities) {
         if (entities != null) {
-            for (BookPo po : entities) {
+            for (BookChapterPo po : entities) {
                 dao.delete(po.toObject());
             }
         }
+
+        this.refreshCache();
     }
 
     @Override
-    public HttpResp create(BookDto dto) {
+    public HttpResp create(BookChapterDto dto) {
         HttpResp resp = new HttpResp();
 
         save(dto.toObject());
 
+        this.refreshCache();
         return resp;
     }
 
     @Override
-    public HttpResp update(BookDto dto) {
+    public HttpResp update(BookChapterDto dto) {
         // TODO Auto-generated method stub
         HttpResp resp = new HttpResp();
 
-        BookPo po = getOne(dto.getId());
+        BookChapterPo po = getOne(dto.getId());
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
             resp.setMessage("编辑习题信息失败，习题信息不存在");
@@ -93,6 +113,7 @@ public class BookServiceImpl implements BookService {
         }
         save(dto.toObject());
 
+        this.refreshCache();
         return resp;
     }
 
@@ -100,7 +121,7 @@ public class BookServiceImpl implements BookService {
     public String doSerializable() {
         String fileName = this.getClass().getSimpleName();
         String filePath = config.getWebFilePath();
-        List<BookPo> list = this.findAll();
+        List<BookChapterPo> list = this.findAll();
         try {
             SerializableFile.doSerializable(list, filePath + File.separator + fileName + ".out");
         } catch (IOException e) {
@@ -112,9 +133,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public void saveByFile(MultipartFile mf) {
         if (mf != null) {
-            List<BookPo> list = null;
+            List<BookChapterPo> list = null;
             try {
-                list = (List<BookPo>) SerializableFile.upSerializable(mf.getBytes());
+                list = (List<BookChapterPo>) SerializableFile.upSerializable(mf.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -122,26 +143,59 @@ public class BookServiceImpl implements BookService {
             }
             if (list != null) {
                 for (int i = 0, len = list.size(); i < len; i++) {
-                    BookPo po = list.get(i);
+                    BookChapterPo po = list.get(i);
                     boolean add = true;
                     if (po.getId() != null) {
-                        BookPo old = getOne(po.getId());
+                        BookChapterPo old = getOne(po.getId());
                         if (old != null) {
                             add = false;
                         }
                     }
-                    if (add ) {
+                    if (add && po.getName() != null) {
                         save(po);
                     }
                 }
+
+                this.refreshCache();
             }
+
         }
     }
 
-    @Override
-    public Page getDataByPage(int pageNo, int pageSize, BookPo obj, List<String> orderBysList, String search) {
+    private void refreshCache() {
+        posCache = null;
+    }
 
-        StringBuffer hql = new StringBuffer(" from BookEntity entity ");
+    @Override
+    public List<Map> treeData() {
+        if (posCache == null) {
+            posCache = DaoUtil.convertDataList(this.dao.findByParentId(null));
+        }
+        return toMap(posCache);
+    }
+
+
+    public List<Map> toMap(List<BookChapterPo> pos) {
+        if (pos == null)
+            return null;
+        List<Map> list = new ArrayList<>();
+        for (int i = 0, size = pos.size(); i < size; i++) {
+            BookChapterPo po = pos.get(i);
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", po.getId());
+            map.put("label", po.getName());
+            if (po.getChildren() != null && po.getChildren().size() > 0) {
+                map.put("children", toMap(po.getChildren()));
+            }
+            list.add(map);
+        }
+        return list;
+    }
+
+    @Override
+    public Page getDataByPage(int pageNo, int pageSize, BookChapterPo obj, List<String> orderBysList, String search) {
+
+        StringBuffer hql = new StringBuffer(" from BookChapterEntity entity ");
         Map<String, Object> params = new HashMap<String, Object>();
         String orderBy = "";
         if (orderBysList != null && orderBysList.size() > 0) {
@@ -154,7 +208,7 @@ public class BookServiceImpl implements BookService {
             params = getWhereParam(obj);
         }
         if (search != null && search.length() > 0) {
-            hql.append("and entity.title like :search");
+            hql.append("and entity.name like :search");
             params.put("search", "%" + search + "%");
         }
         String queryHql = hql.toString();
@@ -164,13 +218,13 @@ public class BookServiceImpl implements BookService {
         }
 
         Page resultPage = baseDao.pagedQuery(queryHql, pageNo, pageSize, params);
-        List<BookEntity> list = (List<BookEntity>) resultPage.getResult();
+        List<BookChapterEntity> list = (List<BookChapterEntity>) resultPage.getResult();
         resultPage.setResult(DaoUtil.convertDataList(list));
         return resultPage;
     }
 
     @Transient
-    public Map<String, Object> getWhereParam(BookPo t) {
+    public Map<String, Object> getWhereParam(BookChapterPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
 
         return params;
@@ -178,8 +232,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transient
-    public String getWhereSql(BookPo t) {
-        StringBuffer sb = new StringBuffer("where 1=1");
+    public String getWhereSql(BookChapterPo t) {
+        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parent is null");
         return sb.toString();
     }
 }

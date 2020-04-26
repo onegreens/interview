@@ -1,8 +1,6 @@
 package com.cl.interview.po;
 
 import com.cl.interview.common.ToObject;
-import com.cl.interview.dto.BookContentDto;
-import com.cl.interview.dto.BookDto;
 import com.cl.interview.entity.BookContentEntity;
 import com.cl.interview.util.ClassUtils;
 import lombok.AllArgsConstructor;
@@ -26,7 +24,7 @@ public class BookContentPo implements Serializable,ToObject<BookContentEntity> {
     /**
      * 书籍Id
      */
-    private BookPo bookPo;
+    private BookChapterPo bookChapterPo;
     /**
      * 标题
      */
@@ -39,7 +37,7 @@ public class BookContentPo implements Serializable,ToObject<BookContentEntity> {
     @Override
     public BookContentEntity toObject() {
         BookContentEntity entity =  (BookContentEntity) new ClassUtils().inheritValue(new BookContentEntity(), this,null);
-        if (this.bookPo != null) entity.setBookEntity(this.getBookPo().toObject());
+        if (this.bookChapterPo != null) entity.setBookChapterEntity(this.getBookChapterPo().toObject());
         return entity;
     }
 }

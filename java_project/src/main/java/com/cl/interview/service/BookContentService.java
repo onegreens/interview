@@ -4,7 +4,6 @@ import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.Page;
 import com.cl.interview.dto.BookContentDto;
 import com.cl.interview.po.BookContentPo;
-import com.cl.interview.po.BookPo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

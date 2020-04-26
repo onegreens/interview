@@ -2,13 +2,14 @@ package com.cl.interview.service;
 
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.Page;
-import com.cl.interview.dto.BookDto;
-import com.cl.interview.po.BookPo;
+import com.cl.interview.dto.BookChapterDto;
+import com.cl.interview.po.BookChapterPo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
-public interface BookService extends CommonService<BookPo> {
+public interface BookChapterService extends CommonService<BookChapterPo> {
 
 
     /**
@@ -20,14 +21,16 @@ public interface BookService extends CommonService<BookPo> {
      * @param orderBysList
      * @return
      */
-    public Page getDataByPage(int pageNo, int pageSize, BookPo obj, List<String> orderBysList, String search);
+    public Page getDataByPage(int pageNo, int pageSize, BookChapterPo obj, List<String> orderBysList, String search);
 
 
-    HttpResp create(BookDto dto);
+    HttpResp create(BookChapterDto dto);
 
-    HttpResp update(BookDto dto);
+    HttpResp update(BookChapterDto dto);
 
     String doSerializable();
 
     void saveByFile(MultipartFile mf);
+
+    List<Map> treeData();
 }

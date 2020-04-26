@@ -1,8 +1,6 @@
 package com.cl.interview.dto;
 
 import com.cl.interview.common.ToObject;
-import com.cl.interview.po.BookContentPo;
-import com.cl.interview.po.BookPo;
 import com.cl.interview.po.QuestionPo;
 import com.cl.interview.util.ClassUtils;
 import lombok.Data;

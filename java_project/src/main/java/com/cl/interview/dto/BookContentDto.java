@@ -1,8 +1,8 @@
 package com.cl.interview.dto;
 
 import com.cl.interview.common.ToObject;
+import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.po.BookContentPo;
-import com.cl.interview.po.BookPo;
 import com.cl.interview.util.ClassUtils;
 import lombok.Data;
 
@@ -29,7 +29,7 @@ public class BookContentDto implements ToObject<BookContentPo> {
     @Override
     public BookContentPo toObject() {
         BookContentPo po = (BookContentPo) new ClassUtils().inheritValue(new BookContentPo(), this, null);
-        po.setBookPo(new BookPo(this.bookId));
+        po.setBookChapterPo(new BookChapterPo(this.bookId));
         return po;
     }
 }
