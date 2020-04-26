@@ -43,6 +43,11 @@ export default {
                     icon: "iconfont icon-people_fill",
                     url: "/user/question"
                 },
+                {
+                    name: "书籍管理",
+                    icon: "iconfont icon-people_fill",
+                    url: "/user/book"
+                },
                
             ],
             page: {},

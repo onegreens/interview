@@ -1,8 +1,8 @@
 <template>
-  <!-- 习题管理 -->
+  <!-- 书籍管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#fff;">习题管理</h3>
+      <h3 style="color:#fff;">书籍管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -87,7 +87,7 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[0].isShow"
-              label="标题"
+              label="书名/章节"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -96,7 +96,7 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[1].isShow"
-              label="解答"
+              label="页码"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -105,16 +105,7 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[2].isShow"
-              label="分类"
-              border
-              size="mini"
-              style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
-            ></el-checkbox>
-          </el-dropdown-item>
-          <el-dropdown-item>
-            <el-checkbox
-              v-model="showArray[3].isShow"
-              label="链接"
+              label="排序"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -124,21 +115,19 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建习题" :visible.sync="dialogFormVisible" center>
-      <el-form :model="form" ref="ruleForm" :rules="rulesNew">
-        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="form.title" auto-complete="off"></el-input>
+    <el-dialog title="新建书籍" :visible.sync="dialogFormVisible" center>
+      <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
+        <el-form-item label="书名/章节" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-input v-model="formNew.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
-          <el-select v-model="form.cateId" placeholder="请选择分类" @change="changeValue" style>
-            <el-option v-for="item in roleNew" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+        <el-form-item label="来源" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-cascader v-model="formNew.parenId" :options="treeData"></el-cascader>
         </el-form-item>
-        <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="form.answer" autosize auto-complete="off"></el-input>
+        <el-form-item label="页码" :label-width="formLabelWidth" class="item100" prop="page">
+          <el-input v-model="formNew.page" autosize auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
-          <el-input v-model="form.href" auto-complete="off"></el-input>
+        <el-form-item label="排序" :label-width="formLabelWidth" class="item100" prop="sort">
+          <el-input v-model="formNew.sort" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -162,24 +151,17 @@
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
-        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
+        <el-form-item label="书名/章节" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-input v-model="formUpdate.name" auto-complete="off" disabled></el-input>
         </el-form-item>
-        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
-          <el-select v-model="formUpdate.cateId" placeholder="请选择查询条件" @change="changeValue" style>
-            <el-option
-              v-for="item in roleUpdate"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+        <el-form-item label="来源" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-cascader v-model="formUpdate.parenId" :options="treeData"></el-cascader>
         </el-form-item>
-        <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formUpdate.answer" autosize auto-complete="off"></el-input>
+        <el-form-item label="页码" :label-width="formLabelWidth" class="item100" prop="page">
+          <el-input v-model="formUpdate.page" autosize auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
-          <el-input v-model="formUpdate.href" auto-complete="off"></el-input>
+        <el-form-item label="排序" :label-width="formLabelWidth" class="item100" prop="sort">
+          <el-input v-model="formUpdate.sort" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -212,46 +194,38 @@
       </div>
     </el-dialog>
     <!-- 内容展示表格 -->
+
     <el-table
       ref="multipleTable"
       :data="tableDataArr"
-      tooltip-effect="dark"
       style="width: 100%;positon:relative;top:10px;"
-      @selection-change="handleSelectionChange"
-      :header-cell-style="getRowClass"
+      row-key="id"
       border
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
-        prop="title"
-        label="标题"
+        prop="name"
+        label="书名/章节"
         :show-overflow-tooltip="true"
-        width="280"
+        width="580"
         v-if="showArray[0].isShow"
       ></el-table-column>
+
       <el-table-column
-        prop="cateId"
+        prop="page"
         :show-overflow-tooltip="true"
-        label="分类"
-        :filters="[{text: 'JAVA', value: 'JAVA'},{text: 'HTML', value: 'HTML'},{text: 'VUE', value: 'VUE'},]"
-        :filter-method="filterHandler"
-        width="180"
-        v-if="showArray[2].isShow"
-      ></el-table-column>
-      <el-table-column
-        prop="answer"
-        :show-overflow-tooltip="true"
-        label="解答"
+        label="页码"
         width="360"
         v-if="showArray[1].isShow"
       ></el-table-column>
 
       <el-table-column
-        prop="href"
+        prop="sort"
         :show-overflow-tooltip="true"
-        label="链接"
+        label="排序"
         width="360"
-        v-if="showArray[3].isShow"
+        v-if="showArray[2].isShow"
       ></el-table-column>
     </el-table>
 
@@ -271,26 +245,32 @@
 </template>
  
  <script>
+import { default as util } from "../../../utils/util.js";
 export default {
   name: "manager",
   inject: ["reload"],
   data() {
     return {
       showArray: [
-        { label: "标题", isShow: true },
-        { label: "解答", isShow: true },
-        { label: "分类", isShow: true },
-        { label: "链接", isShow: true }
+        { label: "书名/章节", isShow: true },
+        { label: "页码", isShow: true },
+        { label: "排序", isShow: true }
+      ],
+      treeData: [
+        {
+          value: "",
+          label: "无"
+        }
       ],
       tableDataArr: [],
       //右侧选择项
       options: [
         {
-          value: "标题",
-          label: "标题"
+          value: "书名/章节",
+          label: "书名/章节"
         }
       ],
-      value: "标题",
+      value: "书名/章节",
       search: "",
       totalCount: 0,
       //表格数据
@@ -302,51 +282,49 @@ export default {
       dialogFormVisibleUpdate: false,
       pageDelete: false,
       //新建提交的表单内容
-      form: {
-        title: "",
-        answer: "",
-        href: "",
-        cateId: ""
+      formNew: {
+        name: "",
+        parentId: "",
+        page: "",
+        sort: ""
       },
       //新建的验证
       rulesNew: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        // answer: [{ required: true, message: "请输入解答", trigger: "blur" }],
-        // href: [{ required: true, message: "请输入链接", trigger: "blur" }],
-        cateId: [{ required: true, message: "请选择分类", trigger: "blur" }]
+        name: [{ required: true, message: "请输入书名/章节", trigger: "blur" }],
+        page: [{ required: true, message: "请输入页码", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       //修改的验证
       rulesUpdate: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        // answer: [{ required: true, message: "请输入习题名", trigger: "blur" }],
-        // href: [{ required: true, message: "请输入链接", trigger: "blur" }],
-        cateId: [{ required: true, message: "请选择分类", trigger: "blur" }]
+        name: [{ required: true, message: "请输入书名/章节", trigger: "blur" }],
+        page: [{ required: true, message: "请输入书籍名", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       //查看的内容
       formLook: {
         id: "",
-        title: "",
-        answer: "",
+        name: "",
+        page: "",
         eamil: ""
       },
       //更新的内容
       formUpdate: {
         id: "",
-        title: "",
-        answer: "",
-        href: "",
+        name: "",
+        page: "",
+        sort: "",
         cateId: ""
       },
       //删除的内容
       formDelete: {
         id: "",
-        title: "",
-        answer: "",
-        href: "",
+        name: "",
+        page: "",
+        sort: "",
         cateId: "",
         Authorization: this.access_token
       },
-      formLabelWidth: "80px",
+      formLabelWidth: "120px",
       multipleSelection: [],
       currentPage4: 1,
       access_token: "",
@@ -356,16 +334,6 @@ export default {
         pageSize: 20,
         Authorization: ""
       },
-      roleNew: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
-      ],
-      roleUpdate: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
-      ]
     };
   },
   components: {},
@@ -410,7 +378,7 @@ export default {
       fd.append("file", file);
       fd.append("Authorization", this.access_token);
       this.$store
-        .dispatch("questionImportExcel", fd)
+        .dispatch("bookImportExcel", fd)
         .then(res => {
           if (res.code == 0) {
             this.$message({
@@ -433,7 +401,7 @@ export default {
     },
     outData() {
       this.$store
-        .dispatch("questionSerializable", this.page)
+        .dispatch("bookSerializable", this.page)
         .then(res => {
           if (res.code == 0) {
             this.$message({
@@ -472,13 +440,37 @@ export default {
         Authorization: this.access_token
       };
       this.$store
-        .dispatch("questionList", this.page)
+        .dispatch("bookList", this.page)
         .then(res => {
           if (res.code == 0) {
             console.log(res.data.result);
             this.tableData = res.data.result;
-            this.tableDataArr = res.data.result;
+            this.tableDataArr =res.data.result;
             this.totalCount = res.data.totalCount;
+          } else {
+            this.$message({
+              type: "warning",
+              message: "系统错误"
+            });
+          }
+        })
+        .catch(e => {
+          this.$alert("未知错误");
+        });
+    },
+    //请求数据
+    getTreeData() {
+      this.page = {
+        Authorization: this.access_token
+      };
+      this.$store
+        .dispatch("bookTreeData", this.page)
+        .then(res => {
+          if (res.code == 0) {
+            var treeData = res.data;
+            if (treeData) {
+              this.treeData = this.treeData.concat(treeData);
+            }
           } else {
             this.$message({
               type: "warning",
@@ -494,15 +486,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //提交时验证标题是否重复
-          let page = {
-            Authorization: this.access_token,
-            answer: this.form.title
-          };
-
-          this.form.Authorization = this.access_token;
+          //提交时验证书名/章节是否重复
+          console.info(this.formNew);
+          this.formNew.Authorization = this.access_token;
           this.$store
-            .dispatch("createQuestion", this.form)
+            .dispatch("createBook", this.formNew)
             .then(res => {
               //console.log(res)
               if (res.code == 0) {
@@ -523,19 +511,20 @@ export default {
       });
       this.dialogFormVisible = false;
       this.form = {
-        title: "",
-        answer: "",
-        href: ""
+        name: "",
+        page: "",
+        sort: ""
       };
       this.reload();
+      this.getTreeData();
     },
     //取消新建信息时情空
     submitFormNo() {
       this.dialogFormVisible = false;
       this.form = {
-        title: "",
-        answer: "",
-        href: ""
+        name: "",
+        page: "",
+        sort: ""
       };
     },
     //修改
@@ -544,7 +533,7 @@ export default {
         if (valid) {
           this.formUpdate.Authorization = this.access_token;
           this.$store
-            .dispatch("updateQuestion", this.formUpdate)
+            .dispatch("updateBook", this.formUpdate)
             .then(res => {
               if (res.code == 0) {
                 this.$message({
@@ -562,6 +551,7 @@ export default {
             });
           this.dialogFormVisibleUpdate = false;
           this.reload();
+          this.getTreeData();
         } else {
           return false;
         }
@@ -570,8 +560,9 @@ export default {
     ruleFormUpdateNo() {
       this.dialogFormVisibleUpdate = false;
       this.reload();
+      this.getTreeData();
     },
-    //删除习题
+    //删除书籍
     ruleFormDelete(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -580,7 +571,7 @@ export default {
             Authorization: this.access_token
           };
           this.$store
-            .dispatch("deleteQuestion", page)
+            .dispatch("deleteBook", page)
             .then(res => {
               if (res.code == 0) {
                 this.$message({
@@ -588,6 +579,7 @@ export default {
                   message: "删除成功"
                 });
                 this.reload();
+                this.getTreeData();
               } else {
                 this.$message({
                   type: "warning",
@@ -627,42 +619,17 @@ export default {
       //console.log(`当前页: ${val}`);
       this.page.pageNo = val;
       this.pageList();
-    },
-    //获取角色列表
-    RoleList() {
-      this.page = {
-        pageNo: this.page.pageNo,
-        pageSize: this.page.pageSize,
-        Authorization: this.access_token
-      };
-      this.$store
-        .dispatch("roleList", this.page)
-        .then(res => {
-          if (res.code == 0) {
-            console.log(res);
-            this.roleNew = res.data.result;
-            this.roleUpdate = res.data.result;
-          } else {
-            this.$message({
-              type: "warning",
-              message: "系统错误"
-            });
-          }
-        })
-        .catch(e => {
-          this.$alert(e);
-        });
     }
   },
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
     this.pageList();
-    // this.RoleList();
+    this.getTreeData();
   },
   destroyed() {}
 };
 </script>
 <style scoped lang='less'>
-@import "./css/question.css";
+@import "./css/book.css";
 </style>
