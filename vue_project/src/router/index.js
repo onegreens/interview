@@ -14,11 +14,16 @@ import userLook from '../components/account/userR_hight/User.vue'
 import manager from '../components/account/menu/manager.vue'
 import question from '../components/account/menu/question.vue'
 import book from '../components/account/menu/book.vue'
+import bookChapter from '../components/account/menu/bookChapter.vue'
 //左侧菜单
 const MENU = [{
     name: 'book',
     path: 'book',
     component: book
+},{
+    name: 'bookChapter',
+    path: 'bookChapter',
+    component: bookChapter
 }, {
     name: 'question',
     path: 'question',

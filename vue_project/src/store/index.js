@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import question from './modules/question';
 import user from './modules/user';
 import menu from './modules/menu';
-import book from './modules/book';
+import book from './modules/bookChapter';
 
 Vue.use(Vuex);
 
