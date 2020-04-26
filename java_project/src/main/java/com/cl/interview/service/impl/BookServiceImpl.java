@@ -1,19 +1,20 @@
 package com.cl.interview.service.impl;
 
 import com.cl.interview.common.HttpResp;
-import com.cl.interview.common.IoTErrorCode;
-import com.cl.interview.config.BaseConfig;
-import com.cl.interview.dto.QuestionDto;
-import com.cl.interview.util.DaoUtil;
 import com.cl.interview.common.IdGenerator;
+import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.common.Page;
+import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
-import com.cl.interview.dao.QuestionDao;
-import com.cl.interview.entity.QuestionEntity;
-import com.cl.interview.po.QuestionPo;
-import com.cl.interview.service.QuestionService;
+import com.cl.interview.dao.BookDao;
+import com.cl.interview.dto.BookDto;
+import com.cl.interview.entity.BookEntity;
+import com.cl.interview.po.BookPo;
+import com.cl.interview.service.BookService;
+import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,18 +24,18 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
-@Service("questionService")
-public class QuestionServiceImpl implements QuestionService {
+@Service("bookService")
+public class BookServiceImpl implements BookService {
+
+    private static List<BookPo> posCache;
 
     @Autowired
-    QuestionDao dao;
+    BookDao dao;
+
     @Autowired
     BaseConfig config;
 
@@ -42,57 +43,78 @@ public class QuestionServiceImpl implements QuestionService {
     private BaseDao baseDao;
 
     @Override
-    public List<QuestionPo> findAll() {
+    public List<BookPo> findAll() {
         return DaoUtil.convertDataList(dao.findAll());
     }
 
     @Override
-    public QuestionPo save(QuestionPo obj) {
+    public BookPo save(BookPo obj) {
+//        if (obj.getId() == null || obj.getId() == 0)
+//            obj.setId(IdGenerator.nextId());
+        if (obj.getParent() == null) {
+            obj.setParent(new BookPo(0));
+        } else if (obj.getParent().getId() == null) {
+            obj.getParent().setId(0);
+        }
+        if (obj.getLevel() == null) {
+            if (obj.getParent().getLevel() == null) {
+                obj.setLevel(1);
+            } else {
+                BookPo parent = getOne(obj.getParent().getId());
+                obj.setLevel(parent.getLevel() + 1);
+            }
+        }
         obj.setCreateTime(Calendar.getInstance().getTime());
-        return dao.save(obj.toObject()).toObject();
+        BookEntity entity = obj.toObject();
+        return dao.save(entity).toObject();
     }
 
     @Override
     public void delete(Integer id) {
         dao.deleteById(id);
+        this.refreshCache();
     }
 
     @Override
-    public QuestionPo getOne(Integer id) {
+    public BookPo getOne(Integer id) {
         return dao.getOne(id).toObject();
     }
 
     @Override
-    public void delete(Iterable<QuestionPo> entities) {
+    public void delete(Iterable<BookPo> entities) {
         if (entities != null) {
-            for (QuestionPo po : entities) {
+            for (BookPo po : entities) {
                 dao.delete(po.toObject());
             }
         }
+
+        this.refreshCache();
     }
 
     @Override
-    public HttpResp create(QuestionDto dto) {
+    public HttpResp create(BookDto dto) {
         HttpResp resp = new HttpResp();
 
-        save(new QuestionPo(dto));
+        save(dto.toObject());
 
+        this.refreshCache();
         return resp;
     }
 
     @Override
-    public HttpResp update(QuestionDto dto) {
+    public HttpResp update(BookDto dto) {
         // TODO Auto-generated method stub
         HttpResp resp = new HttpResp();
 
-        QuestionPo po = getOne(dto.getId());
+        BookPo po = getOne(dto.getId());
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        save(new QuestionPo(dto));
+        save(dto.toObject());
 
+        this.refreshCache();
         return resp;
     }
 
@@ -100,7 +122,7 @@ public class QuestionServiceImpl implements QuestionService {
     public String doSerializable() {
         String fileName = this.getClass().getSimpleName();
         String filePath = config.getWebFilePath();
-        List<QuestionPo> list = this.findAll();
+        List<BookPo> list = this.findAll();
         try {
             SerializableFile.doSerializable(list, filePath + File.separator + fileName + ".out");
         } catch (IOException e) {
@@ -112,9 +134,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void saveByFile(MultipartFile mf) {
         if (mf != null) {
-            List<QuestionPo> list = null;
+            List<BookPo> list = null;
             try {
-                list = (List<QuestionPo>) SerializableFile.upSerializable(mf.getBytes());
+                list = (List<BookPo>) SerializableFile.upSerializable(mf.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -122,26 +144,59 @@ public class QuestionServiceImpl implements QuestionService {
             }
             if (list != null) {
                 for (int i = 0, len = list.size(); i < len; i++) {
-                    QuestionPo po = list.get(i);
+                    BookPo po = list.get(i);
                     boolean add = true;
                     if (po.getId() != null) {
-                        QuestionPo old = getOne(po.getId());
+                        BookPo old = getOne(po.getId());
                         if (old != null) {
                             add = false;
                         }
                     }
-                    if (add && po.getTitle() != null) {
+                    if (add && po.getName() != null) {
                         save(po);
                     }
                 }
+
+                this.refreshCache();
             }
+
         }
     }
 
-    @Override
-    public Page getDataByPage(int pageNo, int pageSize, QuestionPo obj, List<String> orderBysList, String search) {
+    private void refreshCache() {
+        posCache = null;
+    }
 
-        StringBuffer hql = new StringBuffer(" from QuestionEntity entity ");
+    @Override
+    public List<Map> treeData() {
+        if (posCache == null) {
+            posCache = DaoUtil.convertDataList(this.dao.findByParentId(null));
+        }
+        return toMap(posCache);
+    }
+
+
+    public List<Map> toMap(List<BookPo> pos) {
+        if (pos == null)
+            return null;
+        List<Map> list = new ArrayList<>();
+        for (int i = 0, size = pos.size(); i < size; i++) {
+            BookPo po = pos.get(i);
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", po.getId());
+            map.put("label", po.getName());
+            if (po.getChildren() != null && po.getChildren().size() > 0) {
+                map.put("children", toMap(po.getChildren()));
+            }
+            list.add(map);
+        }
+        return list;
+    }
+
+    @Override
+    public Page getDataByPage(int pageNo, int pageSize, BookPo obj, List<String> orderBysList, String search) {
+
+        StringBuffer hql = new StringBuffer(" from BookEntity entity ");
         Map<String, Object> params = new HashMap<String, Object>();
         String orderBy = "";
         if (orderBysList != null && orderBysList.size() > 0) {
@@ -154,7 +209,7 @@ public class QuestionServiceImpl implements QuestionService {
             params = getWhereParam(obj);
         }
         if (search != null && search.length() > 0) {
-            hql.append("and entity.title like :search");
+            hql.append("and entity.name like :search");
             params.put("search", "%" + search + "%");
         }
         String queryHql = hql.toString();
@@ -164,13 +219,13 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         Page resultPage = baseDao.pagedQuery(queryHql, pageNo, pageSize, params);
-        List<QuestionEntity> list = (List<QuestionEntity>) resultPage.getResult();
+        List<BookEntity> list = (List<BookEntity>) resultPage.getResult();
         resultPage.setResult(DaoUtil.convertDataList(list));
         return resultPage;
     }
 
     @Transient
-    public Map<String, Object> getWhereParam(QuestionPo t) {
+    public Map<String, Object> getWhereParam(BookPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
 
         return params;
@@ -178,8 +233,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Transient
-    public String getWhereSql(QuestionPo t) {
-        StringBuffer sb = new StringBuffer("where 1=1");
+    public String getWhereSql(BookPo t) {
+        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parent is null");
         return sb.toString();
     }
 }

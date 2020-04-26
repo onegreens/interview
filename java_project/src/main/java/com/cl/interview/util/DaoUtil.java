@@ -16,7 +16,7 @@
 package com.cl.interview.util;
 
 
-import com.cl.interview.common.ToData;
+import com.cl.interview.common.ToObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,24 +28,25 @@ public abstract class DaoUtil {
     private DaoUtil() {
     }
 
-    public static <T> List<T> convertDataList(Collection<? extends ToData<T>> toDataList) {
+    public static <T> List<T> convertDataList(Collection<? extends ToObject<T>> toObjectList) {
         List<T> list = Collections.emptyList();
-        if (toDataList != null && !toDataList.isEmpty()) {
+        if (toObjectList != null && !toObjectList.isEmpty()) {
             list = new ArrayList<>();
-            for (ToData<T> object : toDataList) {
-                list.add(object.toData());
+            for (ToObject<T> object : toObjectList) {
+                list.add(object.toObject());
             }
         }
         return list;
     }
 
-    public static <T> T getData(ToData<T> data) {
+    public static <T> T getData(ToObject<T> data) {
         T object = null;
         if (data != null) {
-            object = data.toData();
+            object = data.toObject();
         }
         return object;
     }
+    
 
 
 }

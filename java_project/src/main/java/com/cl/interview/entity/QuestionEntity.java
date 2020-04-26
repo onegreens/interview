@@ -1,7 +1,8 @@
 package com.cl.interview.entity;
 
-import com.cl.interview.common.ToData;
+import com.cl.interview.common.ToObject;
 import com.cl.interview.po.QuestionPo;
+import com.cl.interview.util.ClassUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,22 +13,13 @@ import java.util.Date;
 @Table(name = "t_question")
 @Data
 @AllArgsConstructor
-public class QuestionEntity implements ToData<QuestionPo> {
+public class QuestionEntity implements ToObject<QuestionPo> {
     public QuestionEntity() {
-    }
-
-    public QuestionEntity(QuestionPo po) {
-        this.id = po.getId();
-        this.cateId = po.getCateId();
-        this.title = po.getTitle();
-        this.answer = po.getAnswer();
-        this.href = po.getHref();
-        this.createTime = po.getCreateTime();
     }
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     @Column(name = "cate_id")
     private String cateId;
     @Column(name = "title")
@@ -39,8 +31,10 @@ public class QuestionEntity implements ToData<QuestionPo> {
     @Column(name = "create_time")
     private Date createTime;
 
+
     @Override
-    public QuestionPo toData() {
-        return new QuestionPo(this.id, this.cateId, this.title, this.answer, this.href, this.createTime);
+    public QuestionPo toObject() {
+        return (QuestionPo) new ClassUtils().inheritValue(new QuestionPo(), this,null);
+
     }
 }

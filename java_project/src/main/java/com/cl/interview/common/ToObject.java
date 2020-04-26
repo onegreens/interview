@@ -20,12 +20,12 @@ package com.cl.interview.common;
  *
  * @param <T> the type parameter
  */
-public interface ToData<T> {
+public interface ToObject<T> {
 
     /**
      * This method convert domain model object to data transfer object.
      *
      * @return the dto object
      */
-    T toData();
+    T toObject();
 }
