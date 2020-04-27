@@ -54,12 +54,12 @@ public class BookContentServiceImpl implements BookContentService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(String id) {
         dao.deleteById(id);
     }
 
     @Override
-    public BookContentPo getOne(Integer id) {
+    public BookContentPo getOne(String id) {
         return dao.getOne(id).toObject();
     }
 

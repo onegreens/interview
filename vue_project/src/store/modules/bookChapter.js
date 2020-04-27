@@ -9,9 +9,16 @@ import axios from 'axios';
 const bookChapter = {
     state: {
 
+        pageNo: 1,
+        pageSize: 20,
     },
     mutations: {
 
+    },
+    getters: {
+        getBook(state) {
+            return state.bookId
+        }
     },
     actions: {
         bookChapterList({
@@ -28,7 +35,7 @@ const bookChapter = {
             }
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/bookChapterChapter/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
+                    url: `/bookChapter/list?pageNo=${page.pageNo}&search=${page.search}&bookId=${page.bookId}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
                     resolve(data)
@@ -37,14 +44,14 @@ const bookChapter = {
                 })
             })
         },
-        bookChapterChapterTreeData({
+        bookChapterTreeData({
             commit,
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/bookChapterChapter/treeData`,
+                    url: `/bookChapter/treeData?bookId=${page.bookId}`,
                     method: 'get'
                 }).then(data => {
                     resolve(data)

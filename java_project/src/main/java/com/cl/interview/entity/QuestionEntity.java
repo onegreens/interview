@@ -18,8 +18,9 @@ public class QuestionEntity implements ToObject<QuestionPo> {
     }
 
     @Id
-    @GeneratedValue
-    private Integer id;
+
+    @Column(name="ID")
+    private String id;
     @Column(name = "cate_id")
     private String cateId;
     @Column(name = "title")

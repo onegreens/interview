@@ -1,5 +1,6 @@
 package com.cl.interview.po;
 
+import com.cl.interview.common.IdGenerator;
 import com.cl.interview.common.ToObject;
 import com.cl.interview.entity.BookChapterEntity;
 import com.cl.interview.util.ClassUtils;
@@ -18,17 +19,19 @@ public class BookChapterPo implements Serializable, ToObject<BookChapterEntity> 
     public BookChapterPo() {
     }
 
-    public BookChapterPo(Integer id) {
+    public BookChapterPo(String id) {
         this.id = id;
     }
 
-    private Integer id;
+    private String id;
     private List<BookChapterPo> children;
-    private BookChapterPo parent;
+    private String parentId;
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userId;
+
+    private String bookId;
     /**
      * 排序
      */
@@ -52,13 +55,15 @@ public class BookChapterPo implements Serializable, ToObject<BookChapterEntity> 
 
 
     @Override
-    public BookChapterEntity toObject() {
+    public BookChapterEntity toObject() {if (this.id == null) {
+        this.setId(IdGenerator.nextId());
+    }
         BookChapterEntity entity = (BookChapterEntity) new ClassUtils().inheritValue(new BookChapterEntity(), this, new HashSet<String>() {
             {
                 add("parent");
             }
         });
-        if (this.parent != null) entity.setParent(this.parent.toObject());
+
         return entity;
     }
 

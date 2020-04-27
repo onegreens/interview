@@ -9,15 +9,15 @@ import lombok.Data;
 @Data
 public class BookContentDto implements ToObject<BookContentPo> {
 
-    private Integer id;
+    private String id;
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userId;
     /**
      * 书籍Id
      */
-    private Integer bookId;
+    private String bookId;
     /**
      * 标题
      */

@@ -7,12 +7,17 @@ import lombok.Data;
 
 @Data
 public class BookChapterDto implements ToObject<BookChapterPo> {
-    private Integer id;
-    private Integer parentId;
+    private String id;
+    private String parentId;
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userId;
+
+    /**
+     * 用户id
+     */
+    private String bookId;
     /**
      * 排序
      */
@@ -33,7 +38,6 @@ public class BookChapterDto implements ToObject<BookChapterPo> {
     @Override
     public BookChapterPo toObject() {
         BookChapterPo po =  (BookChapterPo) new ClassUtils().inheritValue(new BookChapterPo(), this,null);
-        po.setParent(new BookChapterPo(this.parentId));
         return po;
     }
 }

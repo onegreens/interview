@@ -10,9 +10,11 @@ import java.util.Date;
 @Data
 public class BookDto implements ToObject<BookPo> {
 
-    private Integer id;
+    private String id;
     private String name;
-    private Integer user_id;
+    private String type;
+    private String bookId;
+    private String userId;
     private Date createTime;
 
     @Override

@@ -24,8 +24,9 @@ public class BookContentEntity implements ToObject<BookContentPo> {
     }
 
     @Id
-    @GeneratedValue
-    private Integer id;
+
+    @Column(name="ID")
+    private String id;
 
     @JoinColumn(name = "BOOK_ID", insertable = false, nullable = true, updatable = false)
     @OneToOne
@@ -35,17 +36,12 @@ public class BookContentEntity implements ToObject<BookContentPo> {
      * 用户id
      */
     @Column(name = "USER_ID")
-    private Integer userId;
+    private String userId;
     /**
      * 排序
      */
     @Column(name = "DEGREE")
     private Integer degree;
-    /**
-     * 名称
-     */
-    @Column(name = "NAME")
-    private String name;
     /**
      * 层级
      */

@@ -19,8 +19,8 @@ public class IdGenerator {
         this.idWorker = new SnowflakeIdWorker(workId,dataId);
     }
 
-    public static Long nextId(){
-        return idWorker.nextId();
+    public static String nextId(){
+        return String.valueOf(idWorker.nextId());
     }
 
 }

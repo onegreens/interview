@@ -53,13 +53,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(String id) {
         dao.deleteById(id);
     }
 
     @Override
-    public BookPo getOne(Integer id) {
-        return dao.getOne(id).toObject();
+    public BookPo getOne(String id) {
+        BookEntity entity = dao.getOne(id);
+        if (entity !=null) {
+            return entity.toObject();
+        }
+        return null;
     }
 
     @Override
@@ -130,7 +134,7 @@ public class BookServiceImpl implements BookService {
                             add = false;
                         }
                     }
-                    if (add ) {
+                    if (add) {
                         save(po);
                     }
                 }

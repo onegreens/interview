@@ -53,12 +53,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(String id) {
         dao.deleteById(id);
     }
 
     @Override
-    public QuestionPo getOne(Integer id) {
+    public QuestionPo getOne(String id) {
         return dao.getOne(id).toObject();
     }
 

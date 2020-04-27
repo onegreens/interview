@@ -1,5 +1,6 @@
 package com.cl.interview.po;
 
+import com.cl.interview.common.IdGenerator;
 import com.cl.interview.common.ToObject;
 import com.cl.interview.dto.BookDto;
 import com.cl.interview.entity.BookEntity;
@@ -17,13 +18,17 @@ public class BookPo implements Serializable ,ToObject<BookEntity> {
     public BookPo() {
     }
 
-    private Integer id;
+    private String id;
     private String name;
-    private Integer user_id;
+    private String type;
+    private String userId;
     private Date createTime;
 
     @Override
     public BookEntity toObject() {
+        if (this.id == null) {
+            this.setId(IdGenerator.nextId());
+        }
         return (BookEntity) new ClassUtils().inheritValue(new BookEntity(), this,null);
 
     }

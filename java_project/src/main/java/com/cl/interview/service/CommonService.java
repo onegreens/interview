@@ -27,14 +27,14 @@ public interface CommonService<T> {
 	 * 根据ID删除对象
 	 * @param id
 	 */
-	void delete(Integer id);
+	void delete(String id);
 	
 	/**
 	 * 根据ID获取一个对象
 	 * @param id
 	 * @return
 	 */
-	T getOne(Integer id);
+	T getOne(String id);
 
 	
 	/**

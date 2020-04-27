@@ -2,7 +2,7 @@
   <!-- 习题管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#fff;">习题管理</h3>
+      <h3 style="color:#37b0ff;">习题管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -125,20 +125,20 @@
     </div>
 
     <el-dialog title="新建习题" :visible.sync="dialogFormVisible" center>
-      <el-form :model="form" ref="ruleForm" :rules="rulesNew">
+      <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="form.title" auto-complete="off"></el-input>
+          <el-input v-model="formNew.title" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
-          <el-select v-model="form.cateId" placeholder="请选择分类" @change="changeValue" style>
+          <el-select v-model="formNew.cateId" placeholder="请选择分类" @change="changeValue" style>
             <el-option v-for="item in roleNew" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="form.answer" autosize auto-complete="off"></el-input>
+          <el-input type="textarea" v-model="formNew.answer" autosize auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
-          <el-input v-model="form.href" auto-complete="off"></el-input>
+          <el-input v-model="formNew.href" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -302,7 +302,7 @@ export default {
       dialogFormVisibleUpdate: false,
       pageDelete: false,
       //新建提交的表单内容
-      form: {
+      formNew: {
         title: "",
         answer: "",
         href: "",
@@ -495,14 +495,14 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //提交时验证标题是否重复
-          let page = {
-            Authorization: this.access_token,
-            answer: this.form.title
-          };
+          // let page = {
+          //   Authorization: this.access_token,
+          //   answer: this.formNew.title
+          // };
 
-          this.form.Authorization = this.access_token;
+          this.formNew.Authorization = this.access_token;
           this.$store
-            .dispatch("createQuestion", this.form)
+            .dispatch("createQuestion", this.formNew)
             .then(res => {
               //console.log(res)
               if (res.code == 0) {
@@ -522,9 +522,10 @@ export default {
         }
       });
       this.dialogFormVisible = false;
-      this.form = {
+      this.formNew = {
         title: "",
         answer: "",
+        cateId: "",
         href: ""
       };
       this.reload();
@@ -532,9 +533,10 @@ export default {
     //取消新建信息时情空
     submitFormNo() {
       this.dialogFormVisible = false;
-      this.form = {
+      this.formNew = {
         title: "",
         answer: "",
+        cateId: "",
         href: ""
       };
     },
@@ -628,37 +630,12 @@ export default {
       this.page.pageNo = val;
       this.pageList();
     },
-    //获取角色列表
-    RoleList() {
-      this.page = {
-        pageNo: this.page.pageNo,
-        pageSize: this.page.pageSize,
-        Authorization: this.access_token
-      };
-      this.$store
-        .dispatch("roleList", this.page)
-        .then(res => {
-          if (res.code == 0) {
-            console.log(res);
-            this.roleNew = res.data.result;
-            this.roleUpdate = res.data.result;
-          } else {
-            this.$message({
-              type: "warning",
-              message: "系统错误"
-            });
-          }
-        })
-        .catch(e => {
-          this.$alert(e);
-        });
-    }
+   
   },
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
     this.pageList();
-    // this.RoleList();
   },
   destroyed() {}
 };

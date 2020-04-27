@@ -32,5 +32,7 @@ public interface BookChapterService extends CommonService<BookChapterPo> {
 
     void saveByFile(MultipartFile mf);
 
-    List<Map> treeData();
+    void refreshCache();
+
+    List<Map> treeData(String bookId);
 }

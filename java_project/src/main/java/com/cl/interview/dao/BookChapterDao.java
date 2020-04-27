@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BookChapterDao extends JpaRepository<BookChapterEntity, Integer> {
+public interface BookChapterDao extends JpaRepository<BookChapterEntity, String> {
 
-    List<BookChapterEntity> findByParentId(Integer parentId);
+    List<BookChapterEntity> findByParentId(String parentId);
 }

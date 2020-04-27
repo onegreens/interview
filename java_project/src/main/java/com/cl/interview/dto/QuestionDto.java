@@ -11,7 +11,7 @@ import java.util.Date;
 public class QuestionDto implements ToObject<QuestionPo> {
 
 
-    private Integer id;
+    private String id;
     private String cateId;
     private String title;
     private String answer;

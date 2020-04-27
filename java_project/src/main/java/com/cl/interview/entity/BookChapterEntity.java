@@ -27,27 +27,30 @@ public class BookChapterEntity implements ToObject<BookChapterPo> {
     }
 
     @Id
-    @GeneratedValue
-    private Integer id;
-
-    /**
-     * 父级id
-     */
-    @JoinColumn(name = "PARENT_ID", insertable = false, nullable = true, updatable = false)
-    @OneToOne
-    @NotFound(action = NotFoundAction.IGNORE)
-    private BookChapterEntity parent;
-
+    @Column(name="ID")
+    private String id;
 
     @JoinColumn(name = "PARENT_ID", insertable = false, nullable = true, updatable = false)
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @NotFound(action = NotFoundAction.IGNORE)
     private List<BookChapterEntity> children;
+
+    /**
+     * 父级id
+     */
+    @Column(name = "PARENT_ID")
+    private String parentId;
     /**
      * 用户id
      */
     @Column(name = "USER_ID")
-    private Integer userId;
+    private String userId;
+
+    /**
+     * 书籍id
+     */
+    @Column(name = "BOOK_ID")
+    private String bookId;
     /**
      * 排序
      */

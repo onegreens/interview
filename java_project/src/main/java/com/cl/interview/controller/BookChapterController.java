@@ -22,16 +22,17 @@ import static com.cl.interview.common.Constant.LOG_NAME;
 @Slf4j
 @RestController
 
-@RequestMapping("/bookchapter")
+@RequestMapping("/bookChapter")
 public class BookChapterController {
     @Autowired
     BookChapterService bookChapterService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
-                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search) {
+                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search, @RequestParam String bookId) {
         HttpResp resp = new HttpResp();
         BookChapterPo po = new BookChapterPo();
+        po.setBookId(bookId);
         try {
             resp.setData(bookChapterService.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
         } catch (Exception e) {
@@ -41,12 +42,13 @@ public class BookChapterController {
         }
         return resp;
     }
+
     @RequestMapping(value = "/treeData", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
-                         @RequestHeader(value = "Authorization", required = false) String token) {
+                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam String bookId) {
         HttpResp resp = new HttpResp();
         try {
-            resp.setData(bookChapterService.treeData());
+            resp.setData(bookChapterService.treeData(bookId));
         } catch (Exception e) {
             resp.setCode(IoTErrorCode.server_error.getErrorCode());
             resp.setMessage("书籍信息列表 查询失败，数据库出错 e= " + e.getMessage());
@@ -67,8 +69,8 @@ public class BookChapterController {
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
 
-    public HttpResp deleteBookPo(@PathVariable(value = "id") Integer id,
-                                     @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
+    public HttpResp deleteBookPo(@PathVariable(value = "id") String id,
+                                 @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
         BookChapterPo po = bookChapterService.getOne(id);
         if (po == null) {
@@ -136,6 +138,24 @@ public class BookChapterController {
 
 
         request.setAttribute(Constant.LOG_NAME, "导入成功");
+        return response;
+    }
+
+    /**
+     * 刷新缓存
+     *
+     * @param request
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/refreshCache", method = RequestMethod.POST)
+    public HttpResp refreshCache(HttpServletRequest request,
+                                      @RequestHeader(value = "Authorization", required = false) String token) {
+
+        HttpResp response = new HttpResp();
+
+
+        bookChapterService.refreshCache();
         return response;
     }
 }

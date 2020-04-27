@@ -16,6 +16,7 @@ import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -48,34 +49,40 @@ public class BookChapterServiceImpl implements BookChapterService {
 
     @Override
     public BookChapterPo save(BookChapterPo obj) {
-//        if (obj.getId() == null || obj.getId() == 0)
-//            obj.setId(IdGenerator.nextId());
-        if (obj.getParent() == null) {
-            obj.setParent(new BookChapterPo(0));
-        } else if (obj.getParent().getId() == null) {
-            obj.getParent().setId(0);
-        }
-        if (obj.getLevel() == null) {
-            if (obj.getParent().getLevel() == null) {
-                obj.setLevel(1);
-            } else {
-                BookChapterPo parent = getOne(obj.getParent().getId());
-                obj.setLevel(parent.getLevel() + 1);
-            }
-        }
-        obj.setCreateTime(Calendar.getInstance().getTime());
+        obj = format(obj);
+        if (obj == null) return null;
         BookChapterEntity entity = obj.toObject();
         return dao.save(entity).toObject();
     }
 
+    private BookChapterPo format(BookChapterPo obj) {
+
+        if (obj.getLevel() == null) {
+            if (obj.getParentId() == null) {
+                obj.setLevel(1);
+            } else {
+                BookChapterPo parent = getOne(obj.getParentId());
+                obj.setLevel(parent.getLevel() + 1);
+            }
+        }
+        if (obj.getId() == null) {
+            obj.setCreateTime(Calendar.getInstance().getTime());
+        } else {
+            if (obj.getId().equals(obj.getParentId())) {
+                return null;
+            }
+        }
+        return obj;
+    }
+
     @Override
-    public void delete(Integer id) {
+    public void delete(String id) {
         dao.deleteById(id);
         this.refreshCache();
     }
 
     @Override
-    public BookChapterPo getOne(Integer id) {
+    public BookChapterPo getOne(String id) {
         return dao.getOne(id).toObject();
     }
 
@@ -94,7 +101,12 @@ public class BookChapterServiceImpl implements BookChapterService {
     public HttpResp create(BookChapterDto dto) {
         HttpResp resp = new HttpResp();
 
-        save(dto.toObject());
+        BookChapterPo result = save(dto.toObject());
+        if (result == null) {
+            resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
+            resp.setMessage("创建失败");
+            return resp;
+        }
 
         this.refreshCache();
         return resp;
@@ -111,7 +123,12 @@ public class BookChapterServiceImpl implements BookChapterService {
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        save(dto.toObject());
+        BookChapterPo result = save(dto.toObject());
+        if (result == null) {
+            resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
+            resp.setMessage("创建失败");
+            return resp;
+        }
 
         this.refreshCache();
         return resp;
@@ -150,6 +167,9 @@ public class BookChapterServiceImpl implements BookChapterService {
                         if (old != null) {
                             add = false;
                         }
+                        if (po.getId().equals(po.getParentId())) {
+                            add = false;
+                        }
                     }
                     if (add && po.getName() != null) {
                         save(po);
@@ -162,32 +182,38 @@ public class BookChapterServiceImpl implements BookChapterService {
         }
     }
 
-    private void refreshCache() {
+    public void refreshCache() {
         posCache = null;
     }
 
     @Override
-    public List<Map> treeData() {
+    public List<Map> treeData(String bookId) {
         if (posCache == null) {
             posCache = DaoUtil.convertDataList(this.dao.findByParentId(null));
         }
-        return toMap(posCache);
+        return toMap(posCache, bookId);
     }
 
 
-    public List<Map> toMap(List<BookChapterPo> pos) {
+    public List<Map> toMap(List<BookChapterPo> pos, String bookId) {
         if (pos == null)
             return null;
         List<Map> list = new ArrayList<>();
+        if (StringUtils.isEmpty(bookId)) {
+            return list;
+        }
         for (int i = 0, size = pos.size(); i < size; i++) {
             BookChapterPo po = pos.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("value", po.getId());
-            map.put("label", po.getName());
-            if (po.getChildren() != null && po.getChildren().size() > 0) {
-                map.put("children", toMap(po.getChildren()));
+            if (bookId.equals(po.getBookId())) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("value", po.getId());
+                map.put("label", po.getName());
+                if (po.getChildren() != null && po.getChildren().size() > 0) {
+                    map.put("children", toMap(po.getChildren(), bookId));
+                }
+                list.add(map);
             }
-            list.add(map);
+
         }
         return list;
     }
@@ -214,7 +240,9 @@ public class BookChapterServiceImpl implements BookChapterService {
         String queryHql = hql.toString();
 
         if (orderBy.length() > 0) {
-            queryHql += " order by " + orderBy + " desc ";
+            queryHql += " order by sort desc ";
+        }else{
+            queryHql += " order by sort asc ";
         }
 
         Page resultPage = baseDao.pagedQuery(queryHql, pageNo, pageSize, params);
@@ -226,14 +254,15 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Transient
     public Map<String, Object> getWhereParam(BookChapterPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
-
+        params.put("bookId", t.getBookId());
         return params;
 
     }
 
     @Transient
     public String getWhereSql(BookChapterPo t) {
-        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parent is null");
+        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parentId is null");
+        sb.append(" and bookId = :bookId");
         return sb.toString();
     }
 }

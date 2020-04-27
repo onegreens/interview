@@ -1,8 +1,8 @@
 <template>
-  <!-- 书籍管理 -->
+  <!-- 笔记管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#37b0ff;">{{getBookName}} - 章节管理</h3>
+      <h3 style="color:#37b0ff;">笔记管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -87,7 +87,7 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[0].isShow"
-              label="章节"
+              label="标题"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -96,7 +96,7 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[1].isShow"
-              label="页码"
+              label="内容"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -104,8 +104,18 @@
           </el-dropdown-item>
           <el-dropdown-item>
             <el-checkbox
-              v-model="showArray[2].isShow"
-              label="排序"
+              v-model="showArray[1].isShow"
+              label="见解"
+              border
+              size="mini"
+              style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
+            ></el-checkbox>
+          </el-dropdown-item>
+
+          <el-dropdown-item>
+            <el-checkbox
+              v-model="showArray[3].isShow"
+              label="重要程度"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -115,27 +125,23 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建书籍" :visible.sync="dialogFormVisible" center>
+    <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center>
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
-        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
-          <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
+        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
+          <el-input v-model="formNew.title" auto-complete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="textarea" v-model="formNew.content" autosize auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="textarea" v-model="formNew.think" autosize auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="number" v-model="formNew.degree" autosize auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="章节" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-input v-model="formNew.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="来源" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-cascader
-            v-model="formNew.parentId"
-            :options="treeData"
-            :props="{ checkStrictly: true }"
-            @change="handleParentIdChange"
-          ></el-cascader>
-        </el-form-item>
-        <el-form-item label="页码" :label-width="formLabelWidth" class="item100" prop="page">
-          <el-input v-model="formNew.page" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" :label-width="formLabelWidth" class="item100" prop="sort">
-          <el-input v-model="formNew.sort" auto-complete="off"></el-input>
+          <el-cascader v-model="formNew.chapterId" :options="treeData"></el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -155,28 +161,24 @@
       修改
     </el-button>
 
-    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
+    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate">
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
-        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
-          <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
+        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
+          <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="textarea" v-model="formUpdate.content" autosize auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="textarea" v-model="formUpdate.think" autosize auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
+          <el-input type="number" v-model="formUpdate.degree" autosize auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="章节" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-input v-model="formUpdate.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="来源" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-cascader
-            v-model="formUpdate.parentId"
-            :options="treeData"
-            :props="{ checkStrictly: true }"
-          ></el-cascader>
-        </el-form-item>
-        <el-form-item label="页码" :label-width="formLabelWidth" class="item100" prop="page">
-          <el-input v-model="formUpdate.page" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" :label-width="formLabelWidth" class="item100" prop="sort">
-          <el-input v-model="formUpdate.sort" auto-complete="off"></el-input>
+          <el-cascader v-model="formUpdate.chapterId" :options="treeData"></el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -209,39 +211,52 @@
       </div>
     </el-dialog>
     <!-- 内容展示表格 -->
-
     <el-table
       ref="multipleTable"
       :data="tableDataArr"
+      tooltip-effect="dark"
       style="width: 100%;positon:relative;top:10px;"
-      row-key="id"
-      border
       @selection-change="handleSelectionChange"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :header-cell-style="getRowClass"
+      border
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
-        prop="name"
-        label="章节"
+        prop="title"
+        label="标题"
         :show-overflow-tooltip="true"
-        width="580"
+        width="280"
         v-if="showArray[0].isShow"
       ></el-table-column>
 
       <el-table-column
-        prop="page"
+        prop="content"
         :show-overflow-tooltip="true"
-        label="页码"
+        label="解答"
         width="360"
         v-if="showArray[1].isShow"
       ></el-table-column>
 
       <el-table-column
-        prop="sort"
+        prop="think"
         :show-overflow-tooltip="true"
-        label="排序"
+        label="链接"
         width="360"
         v-if="showArray[2].isShow"
+      ></el-table-column>
+      <el-table-column
+        prop="degree"
+        :show-overflow-tooltip="true"
+        label="链接"
+        width="360"
+        v-if="showArray[3].isShow"
+      ></el-table-column>
+      <el-table-column
+        prop="createTime"
+        :show-overflow-tooltip="true"
+        label="修改时间"
+        width="360"
+        v-if="showArray[4].isShow"
       ></el-table-column>
     </el-table>
 
@@ -261,37 +276,39 @@
 </template>
  
  <script>
- 
-import { mapGetters } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
   data() {
     return {
+      bookId: null,
+      chapterId: null,
       showArray: [
-        { label: "章节", isShow: true },
-        { label: "页码", isShow: true },
-        { label: "排序", isShow: true }
+        { label: "标题", isShow: true },
+        { label: "内容", isShow: true },
+        { label: "见解", isShow: true },
+        { label: "重要程度", isShow: true },
+        { label: "创建时间", isShow: true }
       ],
+      tableDataArr: [],
+      //右侧选择项
+      options: [
+        {
+          value: "标题",
+          label: "标题"
+        }
+      ],
+      value: "标题",
+      search: "",
+      totalCount: 0,
+      //表格数据
+      tableData: [],
       treeData: [
         {
           value: "",
           label: "无"
         }
       ],
-      tableDataArr: [],
-      //右侧选择项
-      options: [
-        {
-          value: "章节",
-          label: "章节"
-        }
-      ],
-      value: "章节",
-      search: "",
-      totalCount: 0,
-      //表格数据
-      tableData: [],
       //弹出框设置
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -300,49 +317,55 @@ export default {
       pageDelete: false,
       //新建提交的表单内容
       formNew: {
-        name: "",
-        parentId: "",
-        page: "",
-        sort: ""
+        title: "",
+        content: "",
+        think: "",
+        chapterId: 0,
+        degree: ""
       },
       //新建的验证
       rulesNew: {
-        name: [{ required: true, message: "请输入章节", trigger: "blur" }],
-        page: [{ required: true, message: "请输入页码", trigger: "blur" }],
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        chapterId: [{ required: true, message: "请选择章节", trigger: "blur" }],
+        content: [{ required: true, message: "请输入内容", trigger: "blur" }]
       },
       //修改的验证
       rulesUpdate: {
-        name: [{ required: true, message: "请输入章节", trigger: "blur" }],
-        page: [{ required: true, message: "请输入书籍名", trigger: "blur" }],
-
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        chapterId: [{ required: true, message: "请选择章节", trigger: "blur" }],
+        content: [{ required: true, message: "请输入内容", trigger: "blur" }]
       },
       //查看的内容
       formLook: {
         id: "",
-        name: "",
-        page: "",
-        eamil: ""
+        title: "",
+        content: "",
+        chapter: "",
+        think: "",
+        degree: ""
       },
       //更新的内容
       formUpdate: {
         id: "",
-        name: "",
-        page: "",
-        sort: "",
-        cateId: ""
+        title: "",
+        content: "",
+        chapter: {},
+        chapterId: 0,
+        think: "",
+        degree: ""
       },
       //删除的内容
       formDelete: {
         id: "",
-        name: "",
-        page: "",
-        sort: "",
-        cateId: "",
+        title: "",
+        content: "",
+        think: "",
+        chapter: {},
+        chapterId: 0,
+        degree: "",
         Authorization: this.access_token
       },
-      formLabelWidth: "120px",
+      formLabelWidth: "80px",
       multipleSelection: [],
       currentPage4: 1,
       access_token: "",
@@ -354,30 +377,10 @@ export default {
       }
     };
   },
-  computed: {
-    // 使用对象展开运算符将 getter 混入 computed 对象中
-    ...mapGetters([
-      "getBookId",
-      "getBookName"
-      // ...
-    ])
-  },
   components: {},
   methods: {
-    handleParentIdChange(value) {
-      if (this.dialogFormVisible) {
-        this.formNew.parentId = value[0];
-      }
-
-      if (this.dialogFormVisibleUpdate) {
-        this.formNew.parentId = value[0];
-      }
-    },
     //筛选
     filterHandler(value, row, column) {
-      // console.log(column)
-      // console.log(row)
-      // console.log(row)
       const property = column["property"];
       return row[property] === value;
     },
@@ -396,7 +399,7 @@ export default {
 
     //最右边的点击导出,导入,下载模板参数
     handleCommand(command) {
-      this.$message("click on item " + command);
+      // this.$message("click on item " + command);
       if (command == "out") {
         this.outData();
       }
@@ -413,7 +416,7 @@ export default {
       fd.append("file", file);
       fd.append("Authorization", this.access_token);
       this.$store
-        .dispatch("bookChapterImportExcel", fd)
+        .dispatch("bookContentImportExcel", fd)
         .then(res => {
           if (res.code == 0) {
             this.$message({
@@ -436,7 +439,7 @@ export default {
     },
     outData() {
       this.$store
-        .dispatch("bookChapterSerializable", this.page)
+        .dispatch("bookContentSerializable", this.page)
         .then(res => {
           if (res.code == 0) {
             this.$message({
@@ -468,20 +471,19 @@ export default {
     },
     //请求数据
     pageList() {
-      console.info(this.getBookId);
-      if (!this.getBookId) {
+      if (this.bookId) {
         this.$alert("未选择书籍");
         return;
       }
       this.page = {
         search: this.search,
-        bookId: this.getBookId,
+        bookId: this.bookId,
         pageNo: this.page.pageNo,
         pageSize: this.page.pageSize,
         Authorization: this.access_token
       };
       this.$store
-        .dispatch("bookChapterList", this.page)
+        .dispatch("bookContentList", this.page)
         .then(res => {
           if (res.code == 0) {
             console.log(res.data.result);
@@ -499,48 +501,23 @@ export default {
           this.$alert("未知错误");
         });
     },
-    //请求数据
-    getTreeData() {
-      if (!this.getBookId) {
-        this.$alert("未选择书籍");
-        return;
-      }
-      this.page = {
-        bookId: this.getBookId,
-        Authorization: this.access_token
-      };
-      this.$store
-        .dispatch("bookChapterTreeData", this.page)
-        .then(res => {
-          if (res.code == 0) {
-            var treeData = res.data || [];
-            treeData.push({
-              value: "",
-              label: "无"
-            });
-            this.treeData = treeData;
-            console.info(this.treeData);
-          } else {
-            this.$message({
-              type: "warning",
-              message: "系统错误"
-            });
-          }
-        })
-        .catch(e => {
-          this.$alert("未知错误");
-        });
-    },
     //提交新建信息
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //提交时验证章节是否重复
-          console.info(this.formNew);
-          this.formNew.bookId = this.getBookId;
+          //提交时验证标题是否重复
+          // let page = {
+          //   Authorization: this.access_token,
+          //   answer: this.formNew.title
+          // };
+          if (this.bookId) {
+            this.$alert("未选择书籍");
+            return;
+          }
+          this.formNew.bookId = this.bookId;
           this.formNew.Authorization = this.access_token;
           this.$store
-            .dispatch("createBookChapter", this.formNew)
+            .dispatch("createBookContent", this.formNew)
             .then(res => {
               //console.log(res)
               if (res.code == 0) {
@@ -548,8 +525,7 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
-                this.reload();
-                this.getTreeData();
+                this.pageList();
               } else {
                 this.$alert("提交失败");
               }
@@ -562,39 +538,44 @@ export default {
       });
       this.dialogFormVisible = false;
       this.formNew = {
-        name: "",
-        page: "",
-        sort: ""
+        title: "",
+        content: "",
+        chpaterId: 0,
+        think: "",
+        degree: ""
       };
+      this.reload();
     },
     //取消新建信息时情空
     submitFormNo() {
       this.dialogFormVisible = false;
       this.formNew = {
-        name: "",
-        page: "",
-        sort: ""
+        title: "",
+        chpaterId: 0,
+        content: "",
+        think: "",
+        degree: ""
       };
     },
     //修改
     ruleFormUpdate(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.formUpdate.id == this.formUpdate.parentId) {
-            this.$alert("不能选择自身作为父级");
+          if (this.bookId) {
+            this.$alert("未选择书籍");
             return;
           }
+          this.formNew.bookId = this.bookId;
           this.formUpdate.Authorization = this.access_token;
           this.$store
-            .dispatch("updateBookChapter", this.formUpdate)
+            .dispatch("updateBookContent", this.formUpdate)
             .then(res => {
               if (res.code == 0) {
                 this.$message({
                   type: "success",
                   message: "修改成功"
                 });
-                this.reload();
-                this.getTreeData();
+                this.pageList();
               } else {
                 this.$alert("提交失败");
               }
@@ -604,6 +585,7 @@ export default {
               //console.log("chucuole"+JSON.stringify(e))
             });
           this.dialogFormVisibleUpdate = false;
+          this.reload();
         } else {
           return false;
         }
@@ -612,9 +594,8 @@ export default {
     ruleFormUpdateNo() {
       this.dialogFormVisibleUpdate = false;
       this.reload();
-      this.getTreeData();
     },
-    //删除书籍
+    //删除笔记
     ruleFormDelete(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -623,7 +604,7 @@ export default {
             Authorization: this.access_token
           };
           this.$store
-            .dispatch("deleteBookChapter", page)
+            .dispatch("deleteBookContent", page)
             .then(res => {
               if (res.code == 0) {
                 this.$message({
@@ -631,7 +612,6 @@ export default {
                   message: "删除成功"
                 });
                 this.reload();
-                this.getTreeData();
               } else {
                 this.$message({
                   type: "warning",
@@ -671,13 +651,38 @@ export default {
       //console.log(`当前页: ${val}`);
       this.page.pageNo = val;
       this.pageList();
+    },
+    getTreeData() {
+      this.page = {
+        Authorization: this.access_token
+      };
+      this.$store
+        .dispatch("bookChapterTreeData", this.page)
+        .then(res => {
+          if (res.code == 0) {
+            var treeData = res.data || [];
+            treeData.push({
+              value: "",
+              label: "无"
+            });
+            this.treeData = treeData;
+          } else {
+            this.$message({
+              type: "warning",
+              message: "系统错误"
+            });
+          }
+        })
+        .catch(e => {
+          this.$alert("未知错误");
+        });
     }
   },
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
-    console.info(this.getBookId);
-    console.info(this.getBookName);
+    this.bookId = localStorage.getItem("bookId");
+    this.chapterId = localStorage.getItem("chapterId");
     this.pageList();
     this.getTreeData();
   },
@@ -685,5 +690,5 @@ export default {
 };
 </script>
 <style scoped lang='less'>
-@import "./css/bookChapter.css";
+@import "./css/bookContent.css";
 </style>

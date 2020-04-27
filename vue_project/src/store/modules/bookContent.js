@@ -1,43 +1,29 @@
 //import {getInfo, login, logout} from '@/api/login'
-import {
-    default as api
-} from '../../utils/api'
+import { default as api } from '../../utils/api'
 import store from '..'
 import router from '../../router'
 import axios from 'axios';
 
-const book = {
+const bookContent = {
     state: {
-        bookId: "",
-        bookName: "",
+
     },
     mutations: {
-        SET_BOOK: (state, book) => {
-            state.bookId = book.id;
-            state.bookName = book.name;
-        }
-    },
-    getters: {
-        getBookId(state) {
-            return state.bookId
-        },
-        getBookName(state) {
-            return state.bookName
-        }
+
     },
     actions: {
-        bookList({
-            commit,
-            state
-        }, page) {
+        bookContentList({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
                 //避免reload时没有参数
-            page.pageNo = store.getters.getPageNo;
-            page.pageSize = store.getters.getPageSize;
-            console.info(page);
+            if (!page.pageNo) {
+                page.pageNo = 1;
+            }
+            if (!page.pageSize) {
+                page.pageSize = 20;
+            }
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/book/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
+                    url: `/bookContent/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
                     resolve(data)
@@ -46,16 +32,13 @@ const book = {
                 })
             })
         },
-        createBook({
-            commit,
-            state
-        }, page) {
+        createBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/book/create`,
+                    url: `/bookContent/create`,
                     method: 'post',
-                    // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"bookName": `${page.bookName}`}
+                    // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"bookContentName": `${page.bookContentName}`}
                     data: page
                 }).then(data => {
                     resolve(data)
@@ -64,16 +47,13 @@ const book = {
                 })
             })
         },
-        updateBook({
-            commit,
-            state
-        }, page) {
+        updateBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/book/update`,
+                    url: `/bookContent/update`,
                     method: 'post',
-                    // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"bookName": `${page.bookName}`,"id": `${page.id}`}
+                    // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"bookContentName": `${page.bookContentName}`,"id": `${page.id}`}
                     data: page
                 }).then(data => {
                     resolve(data)
@@ -82,14 +62,11 @@ const book = {
                 })
             })
         },
-        deleteBook({
-            commit,
-            state
-        }, page) {
+        deleteBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/book/${page.id}/delete`,
+                    url: `/bookContent/${page.id}/delete`,
                     method: 'post',
                 }).then(data => {
                     resolve(data)
@@ -99,14 +76,11 @@ const book = {
             })
         },
 
-        bookSerializable({
-            commit,
-            state
-        }, page) {
+        bookContentSerializable({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/book/doSerializable`,
+                    url: `/bookContent/doSerializable`,
                     method: 'post',
                 }).then(data => {
                     resolve(data)
@@ -115,16 +89,13 @@ const book = {
                 })
             })
         },
-        bookImportExcel({
-            commit,
-            state
-        }, page) {
+        bookContentImportExcel({ commit, state }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
             return new Promise((reject, resolve) => {
                 api({
 
-                    url: `/book/importExcel`,
+                    url: `/bookContent/importExcel`,
                     method: "post",
                     data: page,
                 }).then(data => {
@@ -137,4 +108,4 @@ const book = {
 
     }
 }
-export default book
+export default bookContent

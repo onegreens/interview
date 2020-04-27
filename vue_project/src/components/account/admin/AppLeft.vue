@@ -48,6 +48,16 @@ export default {
                     icon: "iconfont icon-people_fill",
                     url: "/user/book"
                 },
+                {
+                    name: "章节管理",
+                    icon: "iconfont icon-people_fill",
+                    url: "/user/bookChapter"
+                },
+                {
+                    name: "笔记管理",
+                    icon: "iconfont icon-people_fill",
+                    url: "/user/bookContent"
+                },
                
             ],
             page: {},

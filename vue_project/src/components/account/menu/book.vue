@@ -1,8 +1,8 @@
 <template>
-  <!-- 习题管理 -->
+  <!-- 书籍管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#fff;">习题管理</h3>
+      <h3 style="color:#37b0ff;">书籍管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -87,34 +87,17 @@
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[0].isShow"
-              label="标题"
+              label="书名"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
             ></el-checkbox>
           </el-dropdown-item>
+
           <el-dropdown-item>
             <el-checkbox
               v-model="showArray[1].isShow"
-              label="解答"
-              border
-              size="mini"
-              style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
-            ></el-checkbox>
-          </el-dropdown-item>
-          <el-dropdown-item>
-            <el-checkbox
-              v-model="showArray[2].isShow"
               label="分类"
-              border
-              size="mini"
-              style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
-            ></el-checkbox>
-          </el-dropdown-item>
-          <el-dropdown-item>
-            <el-checkbox
-              v-model="showArray[3].isShow"
-              label="链接"
               border
               size="mini"
               style="float:left;margin-bottom:2px;width:100%;text-align:left;padding-top:5px;"
@@ -124,21 +107,15 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建习题" :visible.sync="dialogFormVisible" center>
-      <el-form :model="form" ref="ruleForm" :rules="rulesNew">
-        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="form.title" auto-complete="off"></el-input>
+    <el-dialog title="新建书籍" :visible.sync="dialogFormVisible" center>
+      <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
+        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-input v-model="formNew.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
-          <el-select v-model="form.cateId" placeholder="请选择分类" @change="changeValue" style>
-            <el-option v-for="item in roleNew" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="type">
+          <el-select v-model="formNew.type" placeholder="请选择分类" @change="changeValue" style>
+            <el-option v-for="item in types" :key="item.id" :label="item.text" :value="item.value"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="form.answer" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
-          <el-input v-model="form.href" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -157,29 +134,23 @@
       <i class="el-icon-edit"></i>
       修改
     </el-button>
+    <el-button type="primary" plain @click="toChapter()" class="pageUpdate" size="mini">
+      <i class="el-icon-edit"></i>
+      章节
+    </el-button>
 
-    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate">
+    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
-        <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
+        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="name">
+          <el-input v-model="formUpdate.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
-          <el-select v-model="formUpdate.cateId" placeholder="请选择查询条件" @change="changeValue" style>
-            <el-option
-              v-for="item in roleUpdate"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
+
+        <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="type">
+          <el-select v-model="formUpdate.type" placeholder="请选择查询条件" @change="changeValue" style>
+            <el-option v-for="item in types" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formUpdate.answer" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
-          <el-input v-model="formUpdate.href" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -223,35 +194,20 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
-        prop="title"
-        label="标题"
+        prop="name"
+        label="书名"
         :show-overflow-tooltip="true"
         width="280"
         v-if="showArray[0].isShow"
       ></el-table-column>
       <el-table-column
-        prop="cateId"
+        prop="type"
         :show-overflow-tooltip="true"
         label="分类"
-        :filters="[{text: 'JAVA', value: 'JAVA'},{text: 'HTML', value: 'HTML'},{text: 'VUE', value: 'VUE'},]"
+        :filters="types"
         :filter-method="filterHandler"
         width="180"
         v-if="showArray[2].isShow"
-      ></el-table-column>
-      <el-table-column
-        prop="answer"
-        :show-overflow-tooltip="true"
-        label="解答"
-        width="360"
-        v-if="showArray[1].isShow"
-      ></el-table-column>
-
-      <el-table-column
-        prop="href"
-        :show-overflow-tooltip="true"
-        label="链接"
-        width="360"
-        v-if="showArray[3].isShow"
       ></el-table-column>
     </el-table>
 
@@ -271,13 +227,14 @@
 </template>
  
  <script>
+import { mapMutations } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
   data() {
     return {
       showArray: [
-        { label: "标题", isShow: true },
+        { label: "书名", isShow: true },
         { label: "解答", isShow: true },
         { label: "分类", isShow: true },
         { label: "链接", isShow: true }
@@ -286,11 +243,11 @@ export default {
       //右侧选择项
       options: [
         {
-          value: "标题",
-          label: "标题"
+          value: "书名",
+          label: "书名"
         }
       ],
-      value: "标题",
+      value: "书名",
       search: "",
       totalCount: 0,
       //表格数据
@@ -302,48 +259,44 @@ export default {
       dialogFormVisibleUpdate: false,
       pageDelete: false,
       //新建提交的表单内容
-      form: {
-        title: "",
+      formNew: {
+        name: "",
         answer: "",
         href: "",
-        cateId: ""
+        type: ""
       },
       //新建的验证
       rulesNew: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        // answer: [{ required: true, message: "请输入解答", trigger: "blur" }],
-        // href: [{ required: true, message: "请输入链接", trigger: "blur" }],
-        cateId: [{ required: true, message: "请选择分类", trigger: "blur" }]
+        name: [{ required: true, message: "请输入书名", trigger: "blur" }],
+        type: [{ required: true, message: "请选择分类", trigger: "blur" }]
       },
       //修改的验证
       rulesUpdate: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        // answer: [{ required: true, message: "请输入习题名", trigger: "blur" }],
-        // href: [{ required: true, message: "请输入链接", trigger: "blur" }],
-        cateId: [{ required: true, message: "请选择分类", trigger: "blur" }]
+        name: [{ required: true, message: "请输入书名", trigger: "blur" }],
+        type: [{ required: true, message: "请选择分类", trigger: "blur" }]
       },
       //查看的内容
       formLook: {
         id: "",
-        title: "",
+        name: "",
         answer: "",
         eamil: ""
       },
       //更新的内容
       formUpdate: {
         id: "",
-        title: "",
+        name: "",
         answer: "",
         href: "",
-        cateId: ""
+        type: ""
       },
       //删除的内容
       formDelete: {
         id: "",
-        title: "",
+        name: "",
         answer: "",
         href: "",
-        cateId: "",
+        type: "",
         Authorization: this.access_token
       },
       formLabelWidth: "80px",
@@ -356,27 +309,23 @@ export default {
         pageSize: 20,
         Authorization: ""
       },
-      roleNew: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
-      ],
-      roleUpdate: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
+      types: [
+        { text: "JAVA", value: "JAVA" },
+        { text: "JS", value: "JS" },
+        { text: "数据库", value: "DB" },
+        { text: "LINUX", value: "LINUX" },
+        { text: "算法", value: "ARITHMETIC" },
+        { text: "HTML/CSS", value: "HTML" },
+        { text: "ANDROID", value: "ANDROID" }
       ]
     };
   },
   components: {},
   methods: {
+    ...mapMutations(["SET_PAGE", "SET_BOOK"]),
     //筛选
     filterHandler(value, row, column) {
-      // console.log(column)
-      // console.log(row)
-      // console.log(row)
-      const property = column["property"];
-      return row[property] === value;
+      return row["type"] === value;
     },
     //后端排序
     sortChange(column) {
@@ -465,14 +414,13 @@ export default {
     },
     //请求数据
     pageList() {
-      this.page = {
+      this.SET_PAGE(this.page); //保存一下页面信息  避免reload参数为空
+      var page = {
         search: this.search,
-        pageNo: this.page.pageNo,
-        pageSize: this.page.pageSize,
         Authorization: this.access_token
       };
       this.$store
-        .dispatch("bookList", this.page)
+        .dispatch("bookList", page)
         .then(res => {
           if (res.code == 0) {
             console.log(res.data.result);
@@ -494,15 +442,15 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //提交时验证标题是否重复
-          let page = {
-            Authorization: this.access_token,
-            answer: this.form.title
-          };
+          //提交时验证书名是否重复
+          // let page = {
+          //   Authorization: this.access_token,
+          //   name: this.formNew.name
+          // };
 
-          this.form.Authorization = this.access_token;
+          this.formNew.Authorization = this.access_token;
           this.$store
-            .dispatch("createBook", this.form)
+            .dispatch("createBook", this.formNew)
             .then(res => {
               //console.log(res)
               if (res.code == 0) {
@@ -522,26 +470,28 @@ export default {
         }
       });
       this.dialogFormVisible = false;
-      this.form = {
-        title: "",
-        answer: "",
-        href: ""
+      this.formNew = {
+        name: "",
+        type: ""
       };
       this.reload();
     },
     //取消新建信息时情空
     submitFormNo() {
       this.dialogFormVisible = false;
-      this.form = {
-        title: "",
-        answer: "",
-        href: ""
+      this.formNew = {
+        name: "",
+        type: ""
       };
     },
     //修改
     ruleFormUpdate(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          if (this.formUpdate.id == this.formUpdate.parentId) {
+            this.$alert("不能选择自身作为父级");
+            return;
+          }
           this.formUpdate.Authorization = this.access_token;
           this.$store
             .dispatch("updateBook", this.formUpdate)
@@ -571,7 +521,7 @@ export default {
       this.dialogFormVisibleUpdate = false;
       this.reload();
     },
-    //删除习题
+    //删除书籍
     ruleFormDelete(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -617,6 +567,24 @@ export default {
       this.formUpdate = Selection[0];
       this.formDelete = Selection[0];
     },
+    toChapter() {
+      if (this.multipleSelection.length == 0) {
+        this.$message({
+          type: "warning",
+          message: "请先选择一本书籍查看"
+        });
+        return;
+      }
+      if (this.multipleSelection.length > 1) {
+        this.$message({
+          type: "warning",
+          message: "请选择一本书籍查看"
+        });
+        return;
+      }
+      this.SET_BOOK(this.formLook);
+      this.$router.push({ path: "/user/bookChapter" });
+    },
     //分页
     handleSizeChange(val) {
       //console.log(`每页 ${val} 条`);
@@ -627,38 +595,12 @@ export default {
       //console.log(`当前页: ${val}`);
       this.page.pageNo = val;
       this.pageList();
-    },
-    //获取角色列表
-    RoleList() {
-      this.page = {
-        pageNo: this.page.pageNo,
-        pageSize: this.page.pageSize,
-        Authorization: this.access_token
-      };
-      this.$store
-        .dispatch("roleList", this.page)
-        .then(res => {
-          if (res.code == 0) {
-            console.log(res);
-            this.roleNew = res.data.result;
-            this.roleUpdate = res.data.result;
-          } else {
-            this.$message({
-              type: "warning",
-              message: "系统错误"
-            });
-          }
-        })
-        .catch(e => {
-          this.$alert(e);
-        });
     }
   },
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
     this.pageList();
-    // this.RoleList();
   },
   destroyed() {}
 };

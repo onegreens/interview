@@ -30,16 +30,16 @@
 
   t_question
 
-| 字段        | 类型    | 说明     |
-| ----------- | ------- | -------- |
-| id          | int(11) | 主键     |
-| type_id     | varchar | 分类id   |
-| title       | varchar | 题目     |
-| answer      | varchar | 解答     |
-| href        | varchar | 链接     |
-| img         | varchar | 图片     |
-| create_time | date    | 创建时间 |
-| user_id     | int(11) | 用户id   |
+| 字段        | 类型       | 说明     |
+| ----------- | ---------- | -------- |
+| id          | bigint(20) | 主键     |
+| type_id     | varchar    | 分类id   |
+| title       | varchar    | 题目     |
+| answer      | varchar    | 解答     |
+| href        | varchar    | 链接     |
+| img         | varchar    | 图片     |
+| create_time | date       | 创建时间 |
+| user_id     | bigint(20) | 用户id   |
 
 - 待处理项
   - 未对应分类id
@@ -55,11 +55,11 @@
 
   t_question_category
 
-| 字段      | 类型    | 说明     |
-| --------- | ------- | -------- |
-| id        | int(11) | 主键     |
-| name      | varchar | 名称     |
-| parent_id | int(11) | 父分类id |
+| 字段      | 类型       | 说明     |
+| --------- | ---------- | -------- |
+| id        | bigint(20) | 主键     |
+| name      | varchar    | 名称     |
+| parent_id | bigint(20) | 父分类id |
 
 - 待处理项
   - 创建管理页面及相应后台逻辑
@@ -109,10 +109,11 @@
 
 | 字段        | 类型    | 说明                             |
 | ----------- | ------- | -------------------------------- |
-| id          | int(11) | 主键                             |
+| id          | bigint(20) | 主键                             |
 | name        | varchar | 名称,parent_id为0时,该名称为书名 |
+| type | varchar | 类型 |
 | create_time | date    | 创建时间                         |
-| user_id     | int(11) | 用户id   |
+| user_id     | bigint(20) | 用户id   |
 
 
 ### 书籍章节模块
@@ -127,14 +128,15 @@
 
 | 字段        | 类型    | 说明                             |
 | ----------- | ------- | -------------------------------- |
-| id          | int(11) | 主键                             |
+| id          | bigint(20) | 主键                             |
+| book_id |  |  |
 | name        | varchar | 名称,parent_id为0时,该名称为书名/章节 |
 | sort       | int     | 排序                             |
 | page        | int(4)  | 页码                             |
 | create_time | date    | 创建时间                         |
-| parent_id   | int(11) | 父id                             |
+| parent_id   | bigint(20) | 父id                             |
 | level | int(2) | 层级 |
-| user_id     | int(11) | 用户id   |
+| user_id     | bigint(20) | 用户id   |
 
 ### 书籍笔记模块
 
@@ -143,18 +145,18 @@
   - 存储书籍中相关笔记内容
 - 数据表
 
-  t_book_note
+  t_book_content
 
-| 字段        | 类型    | 说明     |
-| ----------- | ------- | -------- |
-| id          | int(11) | 主键     |
-| title       | varchar | 主题     |
-| content     | varchat | 内容     |
-| think       | varchar | 见解     |
-| degree      | int     | 重要程度 |
-| create_time | date    | 创建时间 |
-| book_id     | int(11) | 书籍id   |
-| user_id     | int(11) | 用户id   |
+| 字段        | 类型       | 说明     |
+| ----------- | ---------- | -------- |
+| id          | bigint(20) | 主键     |
+| title       | varchar    | 主题     |
+| content     | varchat    | 内容     |
+| think       | varchar    | 见解     |
+| degree      | int        | 重要程度 |
+| create_time | date       | 创建时间 |
+| book_id     | bigint(20) | 书籍id   |
+| user_id     | bigint(20) | 用户id   |
 
 ## 待实现
 
@@ -274,4 +276,12 @@
 - 查询
 - 导出
 - 导入
+
+### 相关设置
+
+- 主键
+
+  使用自定义的方式,由于数据库不统一,方便资料汇总
+
+  由于Long长度过长,导致数字在js中失真,所以主键采用字符串的形式
 

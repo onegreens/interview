@@ -56,7 +56,7 @@ public class QuestionController {
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
 
-    public HttpResp deleteQuestionPo(@PathVariable(value = "id") Integer id,
+    public HttpResp deleteQuestionPo(@PathVariable(value = "id") String id,
                                      @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
         QuestionPo po = service.getOne(id);

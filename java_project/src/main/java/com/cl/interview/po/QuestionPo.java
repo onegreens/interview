@@ -1,5 +1,6 @@
 package com.cl.interview.po;
 
+import com.cl.interview.common.IdGenerator;
 import com.cl.interview.common.ToObject;
 import com.cl.interview.dto.QuestionDto;
 import com.cl.interview.entity.QuestionEntity;
@@ -18,7 +19,7 @@ public class QuestionPo implements Serializable ,ToObject<QuestionEntity> {
     public QuestionPo() {
     }
 
-    private Integer id;
+    private String id;
     private String cateId;
     private String title;
     private String answer;
@@ -39,7 +40,9 @@ public class QuestionPo implements Serializable ,ToObject<QuestionEntity> {
     }
 
     @Override
-    public QuestionEntity toObject() {
+    public QuestionEntity toObject() { if (this.id == null) {
+        this.setId(IdGenerator.nextId());
+    }
         return (QuestionEntity) new ClassUtils().inheritValue(new QuestionEntity(), this,null);
 
     }

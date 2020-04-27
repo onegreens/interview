@@ -54,7 +54,7 @@ public class BookContentController {
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
 
-    public HttpResp deleteBookContentPo(@PathVariable(value = "id") Integer id,
+    public HttpResp deleteBookContentPo(@PathVariable(value = "id") String id,
                                      @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
         BookContentPo po = service.getOne(id);

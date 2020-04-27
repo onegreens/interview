@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "t_question")
+@Table(name = "t_book")
 @Data
 @AllArgsConstructor
 public class BookEntity implements ToObject<BookPo> {
@@ -18,12 +18,15 @@ public class BookEntity implements ToObject<BookPo> {
     }
 
     @Id
-    @GeneratedValue
-    private Integer id;
+
+    @Column(name="ID")
+    private String id;
     @Column(name = "name")
     private String name;
+    @Column(name = "type")
+    private String type;
     @Column(name = "user_id")
-    private Integer user_id;
+    private String userId;
     @Column(name = "create_time")
     private Date createTime;
 
