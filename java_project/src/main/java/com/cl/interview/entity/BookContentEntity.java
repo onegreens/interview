@@ -69,7 +69,7 @@ public class BookContentEntity implements ToObject<BookContentPo> {
 
     @Override
     public BookContentPo toObject() {
-        BookContentPo po = (BookContentPo) new ClassUtils().inheritValue(new BookContentPo(), this,null);
+        BookContentPo po = (BookContentPo) ClassUtils.inheritValue(new BookContentPo(), this,null);
         return po;
     }
 }

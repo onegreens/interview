@@ -7,6 +7,7 @@ import com.cl.interview.common.Page;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
 import com.cl.interview.dao.BookChapterDao;
+import com.cl.interview.dao.BookDao;
 import com.cl.interview.dto.BookChapterDto;
 import com.cl.interview.entity.BookChapterEntity;
 import com.cl.interview.exception.ArgumentException;
@@ -39,6 +40,8 @@ public class BookChapterServiceImpl implements BookChapterService {
     BookContentService contentService;
     @Autowired
     BookChapterDao dao;
+    @Autowired
+    BookDao bookDao;
 
     @Autowired
     BaseConfig config;

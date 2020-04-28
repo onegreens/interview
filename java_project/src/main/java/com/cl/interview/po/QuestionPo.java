@@ -43,7 +43,7 @@ public class QuestionPo implements Serializable ,ToObject<QuestionEntity> {
     public QuestionEntity toObject() { if (this.id == null) {
         this.setId(IdGenerator.nextId());
     }
-        return (QuestionEntity) new ClassUtils().inheritValue(new QuestionEntity(), this,null);
+        return (QuestionEntity) ClassUtils.inheritValue(new QuestionEntity(), this,null);
 
     }
 }

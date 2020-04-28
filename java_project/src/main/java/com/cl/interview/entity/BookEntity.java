@@ -27,13 +27,15 @@ public class BookEntity implements ToObject<BookPo> {
     private String type;
     @Column(name = "user_id")
     private String userId;
+    @Column(name = "note_num")
+    private Integer noteNum = 0;
     @Column(name = "create_time")
     private Date createTime;
 
 
     @Override
     public BookPo toObject() {
-        return (BookPo) new ClassUtils().inheritValue(new BookPo(), this,null);
+        return (BookPo) ClassUtils.inheritValue(new BookPo(), this,null);
 
     }
 }

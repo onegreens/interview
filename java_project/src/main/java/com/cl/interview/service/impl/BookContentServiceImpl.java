@@ -132,6 +132,7 @@ public class BookContentServiceImpl implements BookContentService {
         format(dto);
         save(dto.toObject());
 
+        bookDao.addNoteNum(dto.getId());
         return resp;
     }
 

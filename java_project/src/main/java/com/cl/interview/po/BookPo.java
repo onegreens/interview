@@ -22,6 +22,7 @@ public class BookPo implements Serializable ,ToObject<BookEntity> {
     private String name;
     private String type;
     private String userId;
+    private Integer noteNum;
     private Date createTime;
 
     @Override
@@ -29,7 +30,7 @@ public class BookPo implements Serializable ,ToObject<BookEntity> {
         if (this.id == null) {
             this.setId(IdGenerator.nextId());
         }
-        return (BookEntity) new ClassUtils().inheritValue(new BookEntity(), this,null);
+        return (BookEntity) ClassUtils.inheritValue(new BookEntity(), this,null);
 
     }
 }

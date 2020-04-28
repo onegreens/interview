@@ -20,6 +20,6 @@ public class QuestionDto implements ToObject<QuestionPo> {
 
     @Override
     public QuestionPo toObject() {
-        return (QuestionPo) new ClassUtils().inheritValue(new QuestionPo(), this,null);
+        return (QuestionPo) ClassUtils.inheritValue(new QuestionPo(), this,null);
     }
 }

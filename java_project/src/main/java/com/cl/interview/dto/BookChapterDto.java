@@ -44,7 +44,7 @@ public class BookChapterDto implements ToObject<BookChapterPo> {
 
     @Override
     public BookChapterPo toObject() {
-        BookChapterPo po =  (BookChapterPo) new ClassUtils().inheritValue(new BookChapterPo(), this,null);
+        BookChapterPo po =  (BookChapterPo) ClassUtils.inheritValue(new BookChapterPo(), this,null);
         return po;
     }
 }

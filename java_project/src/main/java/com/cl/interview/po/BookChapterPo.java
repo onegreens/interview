@@ -58,7 +58,7 @@ public class BookChapterPo implements Serializable, ToObject<BookChapterEntity> 
     public BookChapterEntity toObject() {if (this.id == null) {
         this.setId(IdGenerator.nextId());
     }
-        BookChapterEntity entity = (BookChapterEntity) new ClassUtils().inheritValue(new BookChapterEntity(), this, new HashSet<String>() {
+        BookChapterEntity entity = (BookChapterEntity) ClassUtils.inheritValue(new BookChapterEntity(), this, new HashSet<String>() {
             {
                 add("parent");
             }

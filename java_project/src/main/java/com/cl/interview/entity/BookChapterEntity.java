@@ -79,7 +79,7 @@ public class BookChapterEntity implements ToObject<BookChapterPo> {
 
     @Override
     public BookChapterPo toObject() {
-        BookChapterPo po = (BookChapterPo) new ClassUtils().inheritValue(new BookChapterPo(), this, new HashSet<String>() {
+        BookChapterPo po = (BookChapterPo) ClassUtils.inheritValue(new BookChapterPo(), this, new HashSet<String>() {
             {
                 //避免反射赋值时无法执行
                 add("parent");

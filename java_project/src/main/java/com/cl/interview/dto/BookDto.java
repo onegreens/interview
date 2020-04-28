@@ -15,10 +15,10 @@ public class BookDto implements ToObject<BookPo> {
     private String type;
     private String userId;
     private Date createTime;
-
+    private Integer noteNum;
 
     @Override
     public BookPo toObject() {
-        return (BookPo) new ClassUtils().inheritValue(new BookPo(), this,null);
+        return (BookPo) ClassUtils.inheritValue(new BookPo(), this,null);
     }
 }

@@ -12,6 +12,7 @@ import com.cl.interview.entity.BookEntity;
 import com.cl.interview.po.BookPo;
 import com.cl.interview.service.BookChapterService;
 import com.cl.interview.service.BookService;
+import com.cl.interview.util.ClassUtils;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.MDDataUtil;
 import com.cl.interview.util.SerializableFile;
@@ -25,10 +26,7 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -83,9 +81,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public HttpResp create(BookDto dto) {
         HttpResp resp = new HttpResp();
-
         save(dto.toObject());
-
         return resp;
     }
 
@@ -100,7 +96,13 @@ public class BookServiceImpl implements BookService {
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        save(dto.toObject());
+        save((BookPo) ClassUtils.inheritValue(po, dto, new HashSet<String>() {
+            {
+                add("noteNum");
+                add("createTime");
+                add("userId");
+            }
+        }));
 
         return resp;
     }
@@ -190,6 +192,8 @@ public class BookServiceImpl implements BookService {
 
         if (orderBy.length() > 0) {
             queryHql += " order by " + orderBy + " desc ";
+        }else{
+            queryHql += " order by noteNum desc ";
         }
 
         Page resultPage = baseDao.pagedQuery(queryHql, pageNo, pageSize, params);

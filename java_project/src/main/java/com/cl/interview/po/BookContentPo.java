@@ -40,7 +40,7 @@ public class BookContentPo implements Serializable, ToObject<BookContentEntity> 
         if (this.id == null) {
             this.setId(IdGenerator.nextId());
         }
-        BookContentEntity entity = (BookContentEntity) new ClassUtils().inheritValue(new BookContentEntity(), this, null);
+        BookContentEntity entity = (BookContentEntity) ClassUtils.inheritValue(new BookContentEntity(), this, null);
         return entity;
     }
 }
