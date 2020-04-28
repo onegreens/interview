@@ -6,12 +6,11 @@
 | ------------ | -------- | ------------------ |
 | 登录模块     | 否       | 未完成后台接口     |
 | 试题模块     | 否       | 未对应试题分类模块 |
-|              | 否       |                    |
-| 书籍章节模块 | 否       |                    |
-|              | 否       |                    |
+| 试题分类     | 否       |                    |
+| 书籍模块     | 否       |                    |
+| 章节模块     | 否       |                    |
 | 试题测试模块 | 否       |                    |
-|              | 否       |                    |
-|              | 否       |                    |
+| 笔记模块     | 否       |                    |
 
 
 
@@ -190,6 +189,99 @@
 
 ## 说明
 
+### 项目启动
+
+- 后端
+
+  - 导入sql
+
+  ```
+  java_project\db\interview.sql
+  ```
+
+  - 修改配置环境
+
+  ```
+  java_project\src\main\resources\application.yml
+  ```
+
+  - 修改mysql地址
+
+    根据当前开发环境
+
+  ```
+  spring:
+    profiles:
+      active: prod
+    datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/interview?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+      username: root
+      password: 123456
+  ```
+
+  ```
+  java_project\src\main\resources\application-dev.yml
+  java_project\src\main\resources\application-prod.yml
+  ```
+
+  - 修改端口 
+
+    根据当前开发环境
+
+  ```
+  server:
+  #  端口
+    port: 8090
+  ```
+
+  ```
+  java_project\src\main\resources\application-dev.yml
+  java_project\src\main\resources\application-prod.yml
+  ```
+
+  - 修改文件存储地址
+
+    用于文件导入导出
+
+  ```
+  web:
+    file:
+      path: D:\interview\interview\java_project\src\main\web
+  ```
+
+  ```
+  java_project\src\main\resources\application.yml
+  ```
+
+  - 启动项目
+
+  ```
+  java_project\src\main\java\com\cl\interview\InterviewApplication.java
+  ```
+
+- 前端
+
+  - 代理设置
+
+  ```
+  vue_project\config\index.js
+  ```
+
+  ```
+   proxyTable: {
+              '/api': {
+                  target: 'http://localhost:8090',
+                  //target:'http://127.0.0.1:8080',
+                  pathRewrite: {
+                      '^/api': '/'
+                  }
+              }
+          },
+  ```
+
+  
+
 ### 模块目录
 
 - 后端结构
@@ -264,20 +356,18 @@
     src\components\account\admin\AppLeft.vue
     ```
 
-    
-
   - 接口
 
     ```
-    src\store\modules\question.js
+  src\store\modules\question.js
     ```
-
+  
   - 页面
 
     ```
-    src\components\account\menu\question.vue
+  src\components\account\menu\question.vue
     ```
-
+  
     
 
 ### 功能说明
