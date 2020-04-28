@@ -2,7 +2,7 @@
   <!-- 笔记管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#37b0ff;">笔记管理</h3>
+      <h3 style="color:#fff;">{{getBookName}} - {{getChapterName}} -笔记管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -127,6 +127,32 @@
 
     <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center>
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
+        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
+          <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="章节"
+          :label-width="formLabelWidth"
+          class="item100"
+          prop="chapterName"
+          v-if="getChapterId"
+        >
+          <el-input v-model="getChapterName" :disabled="true" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="章节"
+          :label-width="formLabelWidth"
+          class="item100"
+          prop="name"
+          v-if="!getChapterId"
+        >
+          <el-cascader
+            v-model="formNew.chapterId"
+            :options="treeData"
+            :props="{ checkStrictly: true }"
+            @change="handleParentIdChange"
+          ></el-cascader>
+        </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
           <el-input v-model="formNew.title" auto-complete="off"></el-input>
         </el-form-item>
@@ -139,9 +165,6 @@
         </el-form-item>
         <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
           <el-input type="number" v-model="formNew.degree" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="章节" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-cascader v-model="formNew.chapterId" :options="treeData"></el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -165,6 +188,27 @@
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
+        <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
+          <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="章节"
+          :label-width="formLabelWidth"
+          class="item100"
+          prop="chapterName"
+          v-if="getChapterId"
+        >
+          <el-input v-model="getChapterName" :disabled="true" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="章节"
+          :label-width="formLabelWidth"
+          class="item100"
+          prop="name"
+          v-if="!getChapterId"
+        >
+          <el-cascader v-model="formUpdate.chapterId" :options="treeData"></el-cascader>
+        </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
           <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
         </el-form-item>
@@ -176,9 +220,6 @@
         </el-form-item>
         <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
           <el-input type="number" v-model="formUpdate.degree" autosize auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="章节" :label-width="formLabelWidth" class="item100" prop="name">
-          <el-cascader v-model="formUpdate.chapterId" :options="treeData"></el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -240,14 +281,14 @@
       <el-table-column
         prop="think"
         :show-overflow-tooltip="true"
-        label="链接"
+        label="见解"
         width="360"
         v-if="showArray[2].isShow"
       ></el-table-column>
       <el-table-column
         prop="degree"
         :show-overflow-tooltip="true"
-        label="链接"
+        label="重要程度"
         width="360"
         v-if="showArray[3].isShow"
       ></el-table-column>
@@ -276,13 +317,13 @@
 </template>
  
  <script>
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
   data() {
     return {
-      bookId: null,
-      chapterId: null,
       showArray: [
         { label: "标题", isShow: true },
         { label: "内容", isShow: true },
@@ -377,8 +418,28 @@ export default {
       }
     };
   },
+  computed: {
+    // 使用对象展开运算符将 getter 混入 computed 对象中
+    ...mapGetters([
+      "getBookId",
+      "getBookName",
+      "getChapterId",
+      "getChapterName"
+      // ...
+    ])
+  },
   components: {},
   methods: {
+    ...mapMutations(["SET_PAGE"]),
+    handleParentIdChange(value) {
+      if (this.dialogFormVisible) {
+        this.formNew.chapterId = value[0];
+      }
+
+      if (this.dialogFormVisibleUpdate) {
+        this.formUpdate.chapterId = value[0];
+      }
+    },
     //筛选
     filterHandler(value, row, column) {
       const property = column["property"];
@@ -471,13 +532,16 @@ export default {
     },
     //请求数据
     pageList() {
-      if (this.bookId) {
+      console.info(this.getBookId);
+      if (!this.getBookId) {
         this.$alert("未选择书籍");
         return;
       }
+      this.SET_PAGE(this.page); //保存一下页面信息  避免reload参数为空
       this.page = {
         search: this.search,
-        bookId: this.bookId,
+        bookId: this.getBookId,
+        chapterId: this.getChapterId,
         pageNo: this.page.pageNo,
         pageSize: this.page.pageSize,
         Authorization: this.access_token
@@ -510,11 +574,14 @@ export default {
           //   Authorization: this.access_token,
           //   answer: this.formNew.title
           // };
-          if (this.bookId) {
+          if (!this.getBookId) {
             this.$alert("未选择书籍");
             return;
           }
-          this.formNew.bookId = this.bookId;
+          this.formNew.bookId = this.getBookId;
+          if (this.getChapterId) {
+            this.formNew.chapterId = this.getChapterId;
+          }
           this.formNew.Authorization = this.access_token;
           this.$store
             .dispatch("createBookContent", this.formNew)
@@ -525,7 +592,7 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
-                this.pageList();
+                this.reload();
               } else {
                 this.$alert("提交失败");
               }
@@ -561,11 +628,14 @@ export default {
     ruleFormUpdate(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.bookId) {
+          if (!this.getBookId) {
             this.$alert("未选择书籍");
             return;
           }
-          this.formNew.bookId = this.bookId;
+          this.formNew.bookId = this.getBookId;
+          if (this.getChapterId) {
+            this.formNew.chapterId = this.getChapterId;
+          }
           this.formUpdate.Authorization = this.access_token;
           this.$store
             .dispatch("updateBookContent", this.formUpdate)
@@ -575,7 +645,7 @@ export default {
                   type: "success",
                   message: "修改成功"
                 });
-                this.pageList();
+                this.reload();
               } else {
                 this.$alert("提交失败");
               }
@@ -585,7 +655,6 @@ export default {
               //console.log("chucuole"+JSON.stringify(e))
             });
           this.dialogFormVisibleUpdate = false;
-          this.reload();
         } else {
           return false;
         }
@@ -653,7 +722,13 @@ export default {
       this.pageList();
     },
     getTreeData() {
+      if (!this.getBookId) {
+        this.$alert("未选择书籍");
+        return;
+      }
       this.page = {
+        bookId: this.getBookId,
+        chapterId: this.getChapterId,
         Authorization: this.access_token
       };
       this.$store
@@ -681,8 +756,10 @@ export default {
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
-    this.bookId = localStorage.getItem("bookId");
-    this.chapterId = localStorage.getItem("chapterId");
+    console.info("BookId:" + this.getBookId);
+    console.info("BookName:" + this.getBookName);
+    console.info("ChapterId:" + this.getChapterId);
+    console.info("ChapterName:" + this.getChapterName);
     this.pageList();
     this.getTreeData();
   },
@@ -690,5 +767,6 @@ export default {
 };
 </script>
 <style scoped lang='less'>
+@import "./css/base.css";
 @import "./css/bookContent.css";
 </style>

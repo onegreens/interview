@@ -13,9 +13,9 @@ public class BookDto implements ToObject<BookPo> {
     private String id;
     private String name;
     private String type;
-    private String bookId;
     private String userId;
     private Date createTime;
+
 
     @Override
     public BookPo toObject() {

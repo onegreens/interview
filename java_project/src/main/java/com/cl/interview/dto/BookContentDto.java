@@ -14,10 +14,12 @@ public class BookContentDto implements ToObject<BookContentPo> {
      * 用户id
      */
     private String userId;
+
     /**
      * 书籍Id
      */
     private String bookId;
+    private String chapterId;
     /**
      * 标题
      */
@@ -29,7 +31,6 @@ public class BookContentDto implements ToObject<BookContentPo> {
     @Override
     public BookContentPo toObject() {
         BookContentPo po = (BookContentPo) new ClassUtils().inheritValue(new BookContentPo(), this, null);
-        po.setBookChapterPo(new BookChapterPo(this.bookId));
         return po;
     }
 }

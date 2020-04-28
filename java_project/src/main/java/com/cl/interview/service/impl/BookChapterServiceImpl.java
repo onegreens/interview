@@ -2,15 +2,17 @@ package com.cl.interview.service.impl;
 
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
+import com.cl.interview.common.MDData;
 import com.cl.interview.common.Page;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
 import com.cl.interview.dao.BookChapterDao;
-import com.cl.interview.dao.BookDao;
 import com.cl.interview.dto.BookChapterDto;
 import com.cl.interview.entity.BookChapterEntity;
+import com.cl.interview.exception.ArgumentException;
 import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.service.BookChapterService;
+import com.cl.interview.service.BookContentService;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,8 @@ public class BookChapterServiceImpl implements BookChapterService {
     private static List<BookChapterPo> posCache;
 
     @Autowired
+    BookContentService contentService;
+    @Autowired
     BookChapterDao dao;
 
     @Autowired
@@ -42,6 +46,31 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Resource
     private BaseDao baseDao;
 
+    public List<MDData> toMD(String bookId) {
+        List<BookChapterEntity> list = this.dao.findByBookIdAndLevel(bookId, 1);
+        List<MDData> result = new ArrayList<>();
+        if (list != null) {
+            for (BookChapterEntity entity :
+                    list) {
+                result.add(toMD(entity));
+            }
+        }
+        return result;
+    }
+
+    public MDData toMD(BookChapterEntity entity) {
+        MDData data = new MDData(entity.getName(), entity.getLevel());
+        List<MDData> result = contentService.toMD(entity.getId());
+        if (entity.getChildren() != null) {
+            for (BookChapterEntity e :
+                    entity.getChildren()) {
+                result.add(toMD(e));
+            }
+        }
+        data.setList(result);
+        return data;
+    }
+
     @Override
     public List<BookChapterPo> findAll() {
         return DaoUtil.convertDataList(dao.findAll());
@@ -49,30 +78,30 @@ public class BookChapterServiceImpl implements BookChapterService {
 
     @Override
     public BookChapterPo save(BookChapterPo obj) {
-        obj = format(obj);
-        if (obj == null) return null;
         BookChapterEntity entity = obj.toObject();
         return dao.save(entity).toObject();
     }
 
-    private BookChapterPo format(BookChapterPo obj) {
-
+    private void format(BookChapterDto obj) throws ArgumentException {
         if (obj.getLevel() == null) {
-            if (obj.getParentId() == null) {
+            if (StringUtils.isEmpty(obj.getParentId())) {
+
                 obj.setLevel(1);
             } else {
                 BookChapterPo parent = getOne(obj.getParentId());
                 obj.setLevel(parent.getLevel() + 1);
             }
         }
-        if (obj.getId() == null) {
+        if (StringUtils.isEmpty(obj.getId())) {
             obj.setCreateTime(Calendar.getInstance().getTime());
         } else {
             if (obj.getId().equals(obj.getParentId())) {
-                return null;
+                throw new ArgumentException("不能选择自身作为父级");
             }
         }
-        return obj;
+        if (StringUtils.isEmpty(obj.getBookId())) {
+            throw new ArgumentException("书籍不能为空");
+        }
     }
 
     @Override
@@ -98,38 +127,26 @@ public class BookChapterServiceImpl implements BookChapterService {
     }
 
     @Override
-    public HttpResp create(BookChapterDto dto) {
+    public HttpResp create(BookChapterDto dto) throws ArgumentException {
         HttpResp resp = new HttpResp();
-
-        BookChapterPo result = save(dto.toObject());
-        if (result == null) {
-            resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
-            resp.setMessage("创建失败");
-            return resp;
-        }
-
+        format(dto);
+        save(dto.toObject());
         this.refreshCache();
         return resp;
     }
 
     @Override
-    public HttpResp update(BookChapterDto dto) {
+    public HttpResp update(BookChapterDto dto) throws ArgumentException {
         // TODO Auto-generated method stub
         HttpResp resp = new HttpResp();
-
+        format(dto);
         BookChapterPo po = getOne(dto.getId());
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        BookChapterPo result = save(dto.toObject());
-        if (result == null) {
-            resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
-            resp.setMessage("创建失败");
-            return resp;
-        }
-
+        save(dto.toObject());
         this.refreshCache();
         return resp;
     }
@@ -241,7 +258,7 @@ public class BookChapterServiceImpl implements BookChapterService {
 
         if (orderBy.length() > 0) {
             queryHql += " order by sort desc ";
-        }else{
+        } else {
             queryHql += " order by sort asc ";
         }
 
@@ -254,7 +271,8 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Transient
     public Map<String, Object> getWhereParam(BookChapterPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("bookId", t.getBookId());
+        if (!StringUtils.isEmpty(t.getBookId()))
+            params.put("bookId", t.getBookId());
         return params;
 
     }
@@ -262,7 +280,8 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Transient
     public String getWhereSql(BookChapterPo t) {
         StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parentId is null");
-        sb.append(" and bookId = :bookId");
+        if (!StringUtils.isEmpty(t.getBookId()))
+            sb.append(" and bookId = :bookId");
         return sb.toString();
     }
 }

@@ -1,8 +1,10 @@
 package com.cl.interview.service;
 
 import com.cl.interview.common.HttpResp;
+import com.cl.interview.common.MDData;
 import com.cl.interview.common.Page;
 import com.cl.interview.dto.BookChapterDto;
+import com.cl.interview.exception.ArgumentException;
 import com.cl.interview.po.BookChapterPo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +26,9 @@ public interface BookChapterService extends CommonService<BookChapterPo> {
     Page getDataByPage(int pageNo, int pageSize, BookChapterPo obj, List<String> orderBysList, String search);
 
 
-    HttpResp create(BookChapterDto dto);
+    HttpResp create(BookChapterDto dto) throws ArgumentException;
 
-    HttpResp update(BookChapterDto dto);
+    HttpResp update(BookChapterDto dto) throws ArgumentException;
 
     String doSerializable();
 
@@ -35,4 +37,6 @@ public interface BookChapterService extends CommonService<BookChapterPo> {
     void refreshCache();
 
     List<Map> treeData(String bookId);
+
+    List<MDData> toMD(String bookId);
 }

@@ -28,10 +28,9 @@ public class BookContentEntity implements ToObject<BookContentPo> {
     @Column(name="ID")
     private String id;
 
-    @JoinColumn(name = "BOOK_ID", insertable = false, nullable = true, updatable = false)
-    @OneToOne
-    @NotFound(action = NotFoundAction.IGNORE)
-    private BookChapterEntity bookChapterEntity;
+    private String bookId;
+    private String chapterId;
+
     /**
      * 用户id
      */
@@ -71,7 +70,6 @@ public class BookContentEntity implements ToObject<BookContentPo> {
     @Override
     public BookContentPo toObject() {
         BookContentPo po = (BookContentPo) new ClassUtils().inheritValue(new BookContentPo(), this,null);
-        if (this.bookChapterEntity != null)    po.setBookChapterPo(this.getBookChapterEntity().toObject());
         return po;
     }
 }

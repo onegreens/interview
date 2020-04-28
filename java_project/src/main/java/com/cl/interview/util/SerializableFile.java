@@ -17,7 +17,11 @@ public class SerializableFile {
      * @param path
      */
     public static void doSerializable(Object object, String path) throws IOException {
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path));
+        File file = new File(path);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
         out.writeObject(object);
         out.close();
     }

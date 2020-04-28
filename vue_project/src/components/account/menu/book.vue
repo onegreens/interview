@@ -2,7 +2,7 @@
   <!-- 书籍管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#37b0ff;">书籍管理</h3>
+      <h3 style="color:#fff;">书籍管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -69,6 +69,9 @@
           </el-dropdown-item>
           <el-dropdown-item command="out">
             <el-button size="small" type="text">导出</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item command="md">
+            <el-button size="small" type="text">MD</el-button>
           </el-dropdown-item>
           <el-dropdown-item command="download">
             <el-button size="small" type="text">下载模板</el-button>
@@ -137,6 +140,11 @@
     <el-button type="primary" plain @click="toChapter()" class="pageUpdate" size="mini">
       <i class="el-icon-edit"></i>
       章节
+    </el-button>
+
+    <el-button type="primary" plain @click="toContent()" class="pageUpdate" size="mini">
+      <i class="el-icon-edit"></i>
+      笔记
     </el-button>
 
     <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
@@ -346,6 +354,9 @@ export default {
       if (command == "out") {
         this.outData();
       }
+      if (command == "md") {
+        this.outMD();
+      }
     },
 
     handleSuccess() {
@@ -378,6 +389,41 @@ export default {
             message: "上传失败",
             type: "warning"
           });
+        });
+    },
+    outMD() {
+      if (this.multipleSelection.length == 0) {
+        this.$message({
+          type: "warning",
+          message: "请先选择一本书籍导出"
+        });
+        return;
+      }
+      if (this.multipleSelection.length > 1) {
+        this.$message({
+          type: "warning",
+          message: "请选择一本书籍导出"
+        });
+        return;
+      }
+      this.page.bookId = this.formLook.id;
+      this.$store
+        .dispatch("bookToMD", this.page)
+        .then(res => {
+          if (res.code == 0) {
+            this.$message({
+              type: "success",
+              message: "导出成功"
+            });
+          } else {
+            this.$message({
+              type: "warning",
+              message: "系统错误"
+            });
+          }
+        })
+        .catch(e => {
+          this.$alert("未知错误");
         });
     },
     outData() {
@@ -566,6 +612,24 @@ export default {
       this.formLook = Selection[0];
       this.formUpdate = Selection[0];
       this.formDelete = Selection[0];
+    },
+    toContent() {
+      if (this.multipleSelection.length == 0) {
+        this.$message({
+          type: "warning",
+          message: "请先选择一本书籍查看"
+        });
+        return;
+      }
+      if (this.multipleSelection.length > 1) {
+        this.$message({
+          type: "warning",
+          message: "请选择一本书籍查看"
+        });
+        return;
+      }
+      this.SET_BOOK(this.formLook);
+      this.$router.push({ path: "/user/bookContent" });
     },
     toChapter() {
       if (this.multipleSelection.length == 0) {

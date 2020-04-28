@@ -1,14 +1,17 @@
 package com.cl.interview.service.impl;
 
-import com.cl.interview.common.HttpResp;
-import com.cl.interview.common.IdGenerator;
-import com.cl.interview.common.IoTErrorCode;
-import com.cl.interview.common.Page;
+import com.cl.interview.common.*;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
+import com.cl.interview.dao.BookChapterDao;
 import com.cl.interview.dao.BookContentDao;
+import com.cl.interview.dao.BookDao;
 import com.cl.interview.dto.BookContentDto;
+import com.cl.interview.entity.BookChapterEntity;
 import com.cl.interview.entity.BookContentEntity;
+import com.cl.interview.entity.BookEntity;
+import com.cl.interview.exception.ArgumentException;
+import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.po.BookContentPo;
 import com.cl.interview.service.BookContentService;
 import com.cl.interview.util.DaoUtil;
@@ -16,6 +19,7 @@ import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -23,10 +27,7 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -35,12 +36,42 @@ public class BookContentServiceImpl implements BookContentService {
 
     @Autowired
     BookContentDao dao;
+    @Autowired
+    BookDao bookDao;
+    @Autowired
+    BookChapterDao chapterDao;
 
     @Autowired
     BaseConfig config;
 
     @Resource
     private BaseDao baseDao;
+
+    public List<MDData> toMD(String chapterId) {
+        List<BookContentEntity> list = this.dao.findByChapterId(chapterId);
+        List<MDData> result = new ArrayList<>();
+        if (list != null) {
+            for (BookContentEntity entity :
+                    list) {
+                result.add(toMD(entity));
+            }
+        }
+        return result;
+    }
+
+    public MDData toMD(BookContentEntity entity) {
+        MDData data = new MDData();
+        data.setSequence(entity.getTitle());
+        List<String> blocks = new ArrayList<>();
+        if (!StringUtils.isEmpty(entity.getContent())) {
+            blocks.add(entity.getContent());
+        }
+        if (!StringUtils.isEmpty(entity.getThink())) {
+            blocks.add(entity.getThink());
+        }
+        data.setBlock(blocks);
+        return data;
+    }
 
     @Override
     public List<BookContentPo> findAll() {
@@ -51,6 +82,29 @@ public class BookContentServiceImpl implements BookContentService {
     public BookContentPo save(BookContentPo obj) {
         obj.setCreateTime(Calendar.getInstance().getTime());
         return dao.save(obj.toObject()).toObject();
+    }
+
+    private void format(BookContentDto obj) throws ArgumentException {
+        if (obj.getDegree() == null) {
+            obj.setDegree(1);
+
+        }
+        if (obj.getChapterId() == null) {
+            throw new ArgumentException("章节不能为空");
+        } else {
+            BookChapterEntity entity = chapterDao.getOne(obj.getChapterId());
+            if (Objects.isNull(entity)) {
+                throw new ArgumentException("章节不存在");
+            }
+        }
+        if (obj.getBookId() == null) {
+            throw new ArgumentException("书籍不能为空");
+        } else {
+            BookEntity entity = bookDao.getOne(obj.getChapterId());
+            if (Objects.isNull(entity)) {
+                throw new ArgumentException("书籍不存在");
+            }
+        }
     }
 
     @Override
@@ -73,19 +127,20 @@ public class BookContentServiceImpl implements BookContentService {
     }
 
     @Override
-    public HttpResp create(BookContentDto dto) {
+    public HttpResp create(BookContentDto dto) throws ArgumentException {
         HttpResp resp = new HttpResp();
-
+        format(dto);
         save(dto.toObject());
 
         return resp;
     }
 
     @Override
-    public HttpResp update(BookContentDto dto) {
+    public HttpResp update(BookContentDto dto) throws ArgumentException {
         // TODO Auto-generated method stub
         HttpResp resp = new HttpResp();
 
+        format(dto);
         BookContentPo po = getOne(dto.getId());
         if (po == null) {
             resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
@@ -131,7 +186,7 @@ public class BookContentServiceImpl implements BookContentService {
                             add = false;
                         }
                     }
-                    if (add ) {
+                    if (add) {
                         save(po);
                     }
                 }
@@ -155,7 +210,7 @@ public class BookContentServiceImpl implements BookContentService {
             params = getWhereParam(obj);
         }
         if (search != null && search.length() > 0) {
-            hql.append("and entity.title like :search");
+            hql.append("and entity.name like :search");
             params.put("search", "%" + search + "%");
         }
         String queryHql = hql.toString();
@@ -173,7 +228,10 @@ public class BookContentServiceImpl implements BookContentService {
     @Transient
     public Map<String, Object> getWhereParam(BookContentPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
-
+        if (!StringUtils.isEmpty(t.getBookId()))
+            params.put("bookId", t.getBookId());
+        if (!StringUtils.isEmpty(t.getChapterId()))
+            params.put("chapterId", t.getChapterId());
         return params;
 
     }
@@ -181,6 +239,10 @@ public class BookContentServiceImpl implements BookContentService {
     @Transient
     public String getWhereSql(BookContentPo t) {
         StringBuffer sb = new StringBuffer("where 1=1");
+        if (!StringUtils.isEmpty(t.getBookId()))
+            sb.append(" and bookId = :bookId");
+        if (!StringUtils.isEmpty(t.getChapterId()))
+            sb.append(" and chapterId = :chapterId");
         return sb.toString();
     }
 }

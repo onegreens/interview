@@ -4,6 +4,7 @@ import com.cl.interview.common.Constant;
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.dto.BookChapterDto;
+import com.cl.interview.exception.ArgumentException;
 import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.service.BookChapterService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class BookChapterController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
 
     public HttpResp create(@RequestBody BookChapterDto dto, HttpServletRequest request,
-                           @RequestHeader(value = "Authorization") String token) {
+                           @RequestHeader(value = "Authorization") String token) throws ArgumentException {
         request.setAttribute(LOG_NAME, "创建书籍信息");
         request.setAttribute("token", token);
 
@@ -89,7 +90,7 @@ public class BookChapterController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public HttpResp updateBookPo(@RequestBody BookChapterDto dto, @RequestHeader(value = "Authorization") String token,
-                                 HttpServletRequest request) {
+                                 HttpServletRequest request) throws ArgumentException {
 
         request.setAttribute(LOG_NAME, "编辑书籍信息  " + dto.getId());
         request.setAttribute("token", token);

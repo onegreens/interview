@@ -84,10 +84,17 @@ public class BookController {
     }
 
     @RequestMapping(value = "/doSerializable", method = RequestMethod.POST)
-    public HttpResp doSerializable(@RequestHeader(value = "Authorization") String token,
-                                   HttpServletRequest request) {
+    public HttpResp doSerializable(@RequestHeader(value = "Authorization") String token) {
         HttpResp resp = new HttpResp();
         bookService.doSerializable();
+        return resp;
+    }
+
+    @RequestMapping(value = "/toMDFile", method = RequestMethod.GET)
+    public HttpResp toMDFile(@RequestHeader(value = "Authorization") String token,
+                                   HttpServletRequest request, @RequestParam String bookId) {
+        HttpResp resp = new HttpResp();
+        bookService.toMDFile(bookId);
         return resp;
     }
 

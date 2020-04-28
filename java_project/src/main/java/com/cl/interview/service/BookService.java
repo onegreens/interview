@@ -29,5 +29,7 @@ public interface BookService extends CommonService<BookPo> {
 
     String doSerializable();
 
+    HttpResp toMDFile(String bookId);
+
     void saveByFile(MultipartFile mf);
 }

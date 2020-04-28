@@ -8,4 +8,5 @@ import java.util.List;
 public interface BookChapterDao extends JpaRepository<BookChapterEntity, String> {
 
     List<BookChapterEntity> findByParentId(String parentId);
+    List<BookChapterEntity> findByBookIdAndLevel(String bookId,Integer level);
 }

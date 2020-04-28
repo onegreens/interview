@@ -1,4 +1,4 @@
-.question_hearder {
+.page_hearder {
     height: 45px;
     line-height: 45px;
     text-align: left;
@@ -9,21 +9,21 @@
     margin-bottom: 10px;
 }
 
-.questionNew {
+.pageNew {
     float: left;
 }
 
-.questionLook {
-    float: left;
-    margin-left: 5px;
-}
-
-.questionUpdate {
+.pageLook {
     float: left;
     margin-left: 5px;
 }
 
-.questionDelete {
+.pageUpdate {
+    float: left;
+    margin-left: 5px;
+}
+
+.pageDelete {
     float: left;
     margin-left: 5px;
 }
@@ -39,7 +39,7 @@
     margin-top: 13px;
 }
 
-.questionNameNew {
+.pageNameNew {
     width: 48%;
     display: inline-block;
     position: relative;
@@ -87,7 +87,7 @@
     position: relative;
 }
 
-.questionNameLook {
+.pageNameLook {
     width: 48%;
     display: inline-block;
     position: relative;

@@ -2,7 +2,7 @@
   <!-- 书籍管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#37b0ff;">{{getBookName}} - 章节管理</h3>
+      <h3 style="color:#fff;">{{getBookName}} - 章节管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -154,7 +154,10 @@
       <i class="el-icon-edit"></i>
       修改
     </el-button>
-
+    <el-button type="primary" plain @click="toContent()" class="pageUpdate" size="mini">
+      <i class="el-icon-edit"></i>
+      笔记
+    </el-button>
     <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
@@ -261,13 +264,14 @@
 </template>
  
  <script>
- 
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
   data() {
     return {
+      left:"left",
       showArray: [
         { label: "章节", isShow: true },
         { label: "页码", isShow: true },
@@ -364,13 +368,32 @@ export default {
   },
   components: {},
   methods: {
+    ...mapMutations(["SET_PAGE", "SET_BOOK_CHAPTER"]),
+    toContent() {
+      if (this.multipleSelection.length == 0) {
+        this.$message({
+          type: "warning",
+          message: "请先选择一章节查看"
+        });
+        return;
+      }
+      if (this.multipleSelection.length > 1) {
+        this.$message({
+          type: "warning",
+          message: "请选择一章节查看"
+        });
+        return;
+      }
+      this.SET_BOOK_CHAPTER(this.formLook);
+      this.$router.push({ path: "/user/bookContent" });
+    },
     handleParentIdChange(value) {
       if (this.dialogFormVisible) {
         this.formNew.parentId = value[0];
       }
 
       if (this.dialogFormVisibleUpdate) {
-        this.formNew.parentId = value[0];
+        this.formUpdate.parentId = value[0];
       }
     },
     //筛选
@@ -473,6 +496,7 @@ export default {
         this.$alert("未选择书籍");
         return;
       }
+      this.SET_PAGE(this.page); //保存一下页面信息  避免reload参数为空
       this.page = {
         search: this.search,
         bookId: this.getBookId,
@@ -551,7 +575,7 @@ export default {
                 this.reload();
                 this.getTreeData();
               } else {
-                this.$alert("提交失败");
+                this.$alert(res.message);
               }
             })
             .catch(e => {
@@ -596,7 +620,7 @@ export default {
                 this.reload();
                 this.getTreeData();
               } else {
-                this.$alert("提交失败");
+                this.$alert(res.message);
               }
             })
             .catch(e => {
@@ -633,10 +657,7 @@ export default {
                 this.reload();
                 this.getTreeData();
               } else {
-                this.$message({
-                  type: "warning",
-                  message: "系统错误"
-                });
+                this.$alert(res.message);
               }
             })
             .catch(e => {

@@ -98,7 +98,22 @@ const book = {
                 })
             })
         },
-
+        bookToMD({
+            commit,
+            state
+        }, page) {
+            axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
+            return new Promise((reject, resolve) => {
+                api({
+                    url: `/book/toMDFile?bookId=${page.bookId}`,
+                    method: 'get',
+                }).then(data => {
+                    resolve(data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
         bookSerializable({
             commit,
             state

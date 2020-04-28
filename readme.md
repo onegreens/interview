@@ -174,6 +174,18 @@
   - 启动一个tomcat
   - 在项目中配置好对应的服务路径
 
+- 页面访问
+
+  - <http://localhost:9520/user/book> 
+
+    页面地址
+
+  - http://localhost:9520/api/book/list?pageNo=1&search=&pageSize=20
+
+    后端接口
+
+    代理转换为http://localhost:8090/book/list?pageNo=1&search=&pageSize=20 
+
 
 
 ## 说明
@@ -271,11 +283,32 @@
 ### 功能说明
 
 - 增加
+
 - 删除
+
 - 修改
+
 - 查询
+
 - 导出
+
 - 导入
+
+- 自定义异常
+
+  - 处理接口
+
+    ```
+    GlobalExceptionController
+    ```
+
+  - 异常类
+
+    ```
+    ArgumentException
+    ```
+
+    
 
 ### 相关设置
 

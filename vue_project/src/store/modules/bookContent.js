@@ -23,7 +23,7 @@ const bookContent = {
             }
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/bookContent/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
+                    url: `/bookContent/list?pageNo=${page.pageNo}&bookId=${page.bookId}&chapterId=${page.chapterId}&search=${page.search}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
                     resolve(data)

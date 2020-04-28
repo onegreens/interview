@@ -2,6 +2,7 @@ package com.cl.interview.service.impl;
 
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
+import com.cl.interview.common.MDData;
 import com.cl.interview.common.Page;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dao.BaseDao;
@@ -9,8 +10,10 @@ import com.cl.interview.dao.BookDao;
 import com.cl.interview.dto.BookDto;
 import com.cl.interview.entity.BookEntity;
 import com.cl.interview.po.BookPo;
+import com.cl.interview.service.BookChapterService;
 import com.cl.interview.service.BookService;
 import com.cl.interview.util.DaoUtil;
+import com.cl.interview.util.MDDataUtil;
 import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,8 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     BookDao dao;
+    @Autowired
+    BookChapterService chapterService;
 
     @Autowired
     BaseConfig config;
@@ -60,7 +65,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookPo getOne(String id) {
         BookEntity entity = dao.getOne(id);
-        if (entity !=null) {
+        if (entity != null) {
             return entity.toObject();
         }
         return null;
@@ -111,6 +116,26 @@ public class BookServiceImpl implements BookService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public MDData toMD(BookPo po) {
+        MDData data = new MDData(po.getName(), 0);
+        List<MDData> result = chapterService.toMD(po.getId());
+        data.setList(result);
+        return data;
+    }
+
+    @Override
+    public HttpResp toMDFile(String bookId) {
+        HttpResp resp = new HttpResp();
+        BookPo po = getOne(bookId);
+        if (po == null) {
+            resp.setCode(IoTErrorCode.ITEM_NOT_FOUND.getErrorCode());
+            resp.setMessage("导出失败，习题信息不存在");
+        }
+        String filePath = config.getWebFilePath() + File.separator + po.getName() + ".md";
+        MDDataUtil.outFile(filePath, toMD(po));
+        return resp;
     }
 
     @Override

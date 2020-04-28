@@ -5,6 +5,8 @@ import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.util.ClassUtils;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class BookChapterDto implements ToObject<BookChapterPo> {
     private String id;
@@ -34,6 +36,11 @@ public class BookChapterDto implements ToObject<BookChapterPo> {
      * 页面
      */
     private Integer page;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
     @Override
     public BookChapterPo toObject() {

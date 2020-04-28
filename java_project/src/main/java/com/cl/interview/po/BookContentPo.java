@@ -22,10 +22,10 @@ public class BookContentPo implements Serializable, ToObject<BookContentEntity> 
      * 用户id
      */
     private String userId;
-    /**
-     * 书籍Id
-     */
-    private BookChapterPo bookChapterPo;
+
+    private String bookId;
+    private String chapterId;
+
     /**
      * 标题
      */
@@ -41,7 +41,6 @@ public class BookContentPo implements Serializable, ToObject<BookContentEntity> 
             this.setId(IdGenerator.nextId());
         }
         BookContentEntity entity = (BookContentEntity) new ClassUtils().inheritValue(new BookContentEntity(), this, null);
-        if (this.bookChapterPo != null) entity.setBookChapterEntity(this.getBookChapterPo().toObject());
         return entity;
     }
 }

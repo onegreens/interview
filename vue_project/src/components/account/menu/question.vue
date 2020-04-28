@@ -2,7 +2,7 @@
   <!-- 习题管理 -->
   <div class="page">
     <div class="page_hearder">
-      <h3 style="color:#37b0ff;">习题管理</h3>
+      <h3 style="color:#fff;">习题管理</h3>
     </div>
     <el-button type="primary" plain @click="dialogFormVisible = true" class="pageNew" size="mini">
       <i class="el-icon-plus"></i>
@@ -271,6 +271,7 @@
 </template>
  
  <script>
+import { mapMutations } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
@@ -463,8 +464,11 @@ export default {
       console.log(this.search);
       this.pageList();
     },
+
+    ...mapMutations(["SET_PAGE"]),
     //请求数据
     pageList() {
+      this.SET_PAGE(this.page); //保存一下页面信息  避免reload参数为空
       this.page = {
         search: this.search,
         pageNo: this.page.pageNo,
@@ -629,8 +633,7 @@ export default {
       //console.log(`当前页: ${val}`);
       this.page.pageNo = val;
       this.pageList();
-    },
-   
+    }
   },
   created() {
     //请求数据

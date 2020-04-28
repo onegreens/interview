@@ -60,7 +60,7 @@ const user = {
             return new Promise((reject, resolve) => {
 
                 api({
-                    url: `dmp/user/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
+                    url: `/user/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
                     // //储存用户信息
@@ -84,7 +84,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/user/create`,
+                    url: `/user/create`,
                     method: 'post',
                     // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"userName": `${page.userName}`}
                     data: page
@@ -100,7 +100,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/user/update`,
+                    url: `/user/update`,
                     method: 'post',
                     // data: {"account": `${page.account}`,"email":`${page.email}`,"msisdn": `${page.msisdn}`,"pwd": `${page.pwd}`,"userName": `${page.userName}`,"userId": `${page.userId}`}
                     data: page
@@ -117,7 +117,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/user/${page.userId}/delete`,
+                    url: `/user/${page.userId}/delete`,
                     method: 'post',
                 }).then(data => {
                     resolve(data)
@@ -131,7 +131,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/role/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
+                    url: `/role/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
                     method: 'get',
                 }).then(data => {
                     resolve(data)
@@ -145,7 +145,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/role/${page.id}/delete`,
+                    url: `/role/${page.id}/delete`,
                     method: 'post',
                 }).then(data => {
                     resolve(data)
@@ -159,7 +159,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/role/create?name=${page.name}`,
+                    url: `/role/create?name=${page.name}`,
                     method: 'post',
                 }).then(data => {
                     resolve(data)
@@ -173,7 +173,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/role/updateRole`,
+                    url: `/role/updateRole`,
                     method: 'post',
                     data: { "name": `${page.name}`, "id": `${page.id}` }
                 }).then(data => {
@@ -188,7 +188,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/user/${page.id}/setPassword`,
+                    url: `/user/${page.id}/setPassword`,
                     method: 'post',
                     data: page.form
                 }).then(data => {
@@ -203,7 +203,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/user/loadByUserName?userName=${page.userName}`,
+                    url: `/user/loadByUserName?userName=${page.userName}`,
                     method: 'get',
                 }).then(data => {
                     resolve(data)
@@ -217,7 +217,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/home/admin`,
+                    url: `/home/admin`,
                     method: 'get',
                 }).then(data => {
                     resolve(data)
@@ -231,7 +231,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/telemetryAttributes/statisByDay?startTime=${page.startTime}&endTime=${page.endTime}`,
+                    url: `/telemetryAttributes/statisByDay?startTime=${page.startTime}&endTime=${page.endTime}`,
                     method: 'get',
                 }).then(data => {
                     resolve(data)
@@ -245,7 +245,7 @@ const user = {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
-                    url: `dmp/telemetryAttributes/${page.devId}/statisByDevAndAttributeName?startDate=${page.startDate}&endDate=${page.endDate}&attributeName=${page.attributeName}`,
+                    url: `/telemetryAttributes/${page.devId}/statisByDevAndAttributeName?startDate=${page.startDate}&endDate=${page.endDate}&attributeName=${page.attributeName}`,
                     method: 'get',
                 }).then(data => {
                     resolve(data)

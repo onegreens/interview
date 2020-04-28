@@ -4,6 +4,7 @@ import com.cl.interview.common.Constant;
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.dto.BookContentDto;
+import com.cl.interview.exception.ArgumentException;
 import com.cl.interview.po.BookContentPo;
 import com.cl.interview.service.BookContentService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +30,12 @@ public class BookContentController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
-                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search) {
+                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam String bookId, @RequestParam String chapterId, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search) {
         HttpResp resp = new HttpResp();
         BookContentPo po = new BookContentPo();
+        po.setBookId(bookId);
+        po.setChapterId(chapterId);
+
         try {
             resp.setData(service.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
         } catch (Exception e) {
@@ -45,7 +49,7 @@ public class BookContentController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
 
     public HttpResp create(@RequestBody BookContentDto dto, HttpServletRequest request,
-                           @RequestHeader(value = "Authorization") String token) {
+                           @RequestHeader(value = "Authorization") String token) throws ArgumentException {
         request.setAttribute(LOG_NAME, "创建书籍信息");
         request.setAttribute("token", token);
 
@@ -55,7 +59,7 @@ public class BookContentController {
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.POST)
 
     public HttpResp deleteBookContentPo(@PathVariable(value = "id") String id,
-                                     @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
+                                        @RequestHeader(value = "Authorization") String token, HttpServletRequest request) {
         HttpResp resp = new HttpResp();
         BookContentPo po = service.getOne(id);
         if (po == null) {
@@ -74,7 +78,7 @@ public class BookContentController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public HttpResp updateBookContentPo(@RequestBody BookContentDto dto, @RequestHeader(value = "Authorization") String token,
-                                     HttpServletRequest request) {
+                                        HttpServletRequest request) throws ArgumentException {
 
         request.setAttribute(LOG_NAME, "编辑书籍信息  " + dto.getId());
         request.setAttribute("token", token);

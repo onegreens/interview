@@ -8,16 +8,21 @@ import axios from 'axios';
 
 const bookChapter = {
     state: {
-
-        pageNo: 1,
-        pageSize: 20,
+        chapterId: "",
+        chapterName: "",
     },
     mutations: {
-
+        SET_BOOK_CHAPTER: (state, chapter) => {
+            state.chapterId = chapter.id;
+            state.chapterName = chapter.name;
+        }
     },
     getters: {
-        getBook(state) {
-            return state.bookId
+        getChapterId(state) {
+            return state.chapterId
+        },
+        getChapterName(state) {
+            return state.chapterName
         }
     },
     actions: {

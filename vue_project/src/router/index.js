@@ -15,15 +15,20 @@ import manager from '../components/account/menu/manager.vue'
 import question from '../components/account/menu/question.vue'
 import book from '../components/account/menu/book.vue'
 import bookChapter from '../components/account/menu/bookChapter.vue'
+import bookContent from '../components/account/menu/bookContent.vue'
 //左侧菜单
 const MENU = [{
     name: 'book',
     path: 'book',
     component: book
-},{
+}, {
     name: 'bookChapter',
     path: 'bookChapter',
     component: bookChapter
+}, {
+    name: 'bookContent',
+    path: 'bookContent',
+    component: bookContent
 }, {
     name: 'question',
     path: 'question',
@@ -47,9 +52,16 @@ let router = new Router({
             name: 'user',
             path: '/user',
             component: user,
-            children: [
-                { name: 'changepassword', path: 'changepassword', component: changepassword },
-                { name: 'userLook', path: 'userLook', component: userLook },
+            children: [{
+                    name: 'changepassword',
+                    path: 'changepassword',
+                    component: changepassword
+                },
+                {
+                    name: 'userLook',
+                    path: 'userLook',
+                    component: userLook
+                },
                 {
                     name: 'hearder',
                     path: 'hearder',
@@ -61,12 +73,36 @@ let router = new Router({
                 ...MENU
             ]
         },
-        { name: 'login', path: '/login', component: login },
-        { name: 'register', path: '/register', component: register },
-        { name: 'forgit', path: '/forgit', component: forgit },
-        { name: 'dxlogin', path: '/dxlogin', component: dxlogin },
-        { name: 'mode', path: '*', redirect: "/login" },
-        { name: 'mode1', path: '/', redirect: "/login" }
+        {
+            name: 'login',
+            path: '/login',
+            component: login
+        },
+        {
+            name: 'register',
+            path: '/register',
+            component: register
+        },
+        {
+            name: 'forgit',
+            path: '/forgit',
+            component: forgit
+        },
+        {
+            name: 'dxlogin',
+            path: '/dxlogin',
+            component: dxlogin
+        },
+        {
+            name: 'mode',
+            path: '*',
+            redirect: "/login"
+        },
+        {
+            name: 'mode1',
+            path: '/',
+            redirect: "/login"
+        }
     ]
 })
 
