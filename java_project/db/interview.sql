@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
+Source Server         : mysql
 Source Server Version : 50722
 Source Host           : localhost:3306
 Source Database       : interview
@@ -10,10 +10,23 @@ Target Server Type    : MYSQL
 Target Server Version : 50722
 File Encoding         : 65001
 
-Date: 2020-04-29 18:01:11
+Date: 2020-04-29 22:52:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `hibernate_sequence`
+-- ----------------------------
+DROP TABLE IF EXISTS `hibernate_sequence`;
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of hibernate_sequence
+-- ----------------------------
+INSERT INTO `hibernate_sequence` VALUES ('31');
 
 -- ----------------------------
 -- Table structure for `t_book`
@@ -162,3 +175,7 @@ INSERT INTO `t_question` VALUES ('242812942993588224', '1:\n    new Test();//直
 INSERT INTO `t_question` VALUES ('242814231248896000', 'Class.forName(className)方法，其实调用的方法是Class.forName(className,true,classloader);注意看第2个boolean参数，它表示的意思，在loadClass后必须初始化。比较下我们前面准备jvm加载类的知识，我们可以清晰的看到在执行过此方法后，目标对象的 static块代码已经被执行，static参数也已经被初始化。\n\n再看ClassLoader.loadClass(className)方法，其实他调用的方法是ClassLoader.loadClass(className,false);还是注意看第2个 boolean参数，该参数表示目标对象被装载后不进行链接，这就意味这不会去执行该类静态块中间的内容。因此2者的区别就显而易见了。', 'JAVA', '2020-04-29 15:54:07', 'https://my.oschina.net/gpzhang/blog/486743', '反射中，Class.forName 和 ClassLoader 区别');
 INSERT INTO `t_question` VALUES ('242814485356609536', 'jdk动态代理是由java内部的反射机制来实现的，cglib动态代理底层则是借助asm来实现的', 'JAVA', '2020-04-29 15:55:08', 'https://blog.csdn.net/HEYUTAO007/article/details/49738887', 'Java动态代理的两种实现方法');
 INSERT INTO `t_question` VALUES ('242815963714551808', '1:懒汉模式\npublic class LHan(){\n    private static LHan instance;\n    private LHan(){};\n    public LHan getInstance(){\n        if(instance == null){\n             instance = new LHan();\n        }\n        return instance;\n    }\n}\n2:饿汉模式\nclass EHan {\n    private static  EHan instance = new EHan();\n    private EHan(){       \n    }\n    public static EHan getInstance() {\n        return instance;\n    }\n}\n3.双重锁模式\nclass DBLock {\n    private volatile static DBLock instace;\n    private DBLock() {}\n    public static DBLock getInstace() {\n        if (instace == null) {\n            synchronized (DBLock.class) {\n                if (instace == null) {\n                    instace = new DBLock();\n                }\n            }\n        }\n        return instace;\n    }\n}', 'JAVA', '2020-04-29 16:07:38', 'https://www.jianshu.com/p/3bfd916f2bb2', '写出三种单例模式实现');
+INSERT INTO `t_question` VALUES ('242901052146319360', 'public： Java语言中访问限制最宽的修饰符，一般称之为“公共的”。被其修饰的类、属性以及方法不仅可以跨类访问，而且允许跨包（package）访问。\nprivate: Java语言中对访问权限限制的最窄的修饰符，一般称之为“私有的”。被其修饰的类、属性以及方法只能被该类的对象访问，其子类不能访问，更不能允许跨包访问。\nprotect: 介于public 和 private 之间的一种访问修饰符，一般称之为“保护形”。被其修饰的类、属性以及方法只能被类本身的方法及子类访问，即使子类在不同的包中也可以访问。\ndefault：即不加任何访问修饰符，通常称为\"默认访问模式\"。该模式下，只允许在同一个包中进行访问。', 'JAVA', '2020-04-29 21:39:07', '', 'public、private、protected、default作用域');
+INSERT INTO `t_question` VALUES ('242901760065142784', '深拷贝和浅拷贝是只针对Object和Array这样的引用数据类型的\n\n浅拷贝只复制指向某个对象的指针，而不复制对象本身，新旧对象还是共享同一块内存。但深拷贝会另外创造一个一模一样的对象，新对象跟原对象不共享内存，修改新对象不会改到原对象', 'JAVA', '2020-04-29 21:41:56', 'https://segmentfault.com/a/1190000018874254', '深拷贝和浅拷贝区别');
+INSERT INTO `t_question` VALUES ('242902386178260992', 'java.lang.Throwable是所有异常的根\n\njava.lang.Error是错误信息\n\njava.lang.Exception是异常信息', 'JAVA', '2020-04-29 21:44:25', 'https://blog.csdn.net/woshixuye/article/details/8230407', 'error 和 exception 的区别，CheckedException，RuntimeException 的区别');
+INSERT INTO `t_question` VALUES ('242905725620191232', 'NullPointerException\nIndecOutOfBoundException\nClassCastException\nAricthmeticException\nIllegalArgumentException', 'JAVA', '2020-04-29 21:57:41', '', '请列出 5 个运行时异常');
