@@ -34,7 +34,6 @@ const book = {
                 //避免reload时没有参数
             page.pageNo = store.getters.getPageNo;
             page.pageSize = store.getters.getPageSize;
-            console.info(page);
             return new Promise((reject, resolve) => {
                 api({
                     url: `/book/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,

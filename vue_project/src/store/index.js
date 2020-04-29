@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import base from './modules/base';
 import question from './modules/question';
+import exam from './modules/exam';
 import user from './modules/user';
 import menu from './modules/menu';
 import book from './modules/book';
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
         bookContent,
         bookChapter,
         user,
+        exam,
         question,
         menu
     }

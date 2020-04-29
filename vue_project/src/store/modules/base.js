@@ -13,7 +13,6 @@ const base = {
     },
     mutations: {
         SET_PAGE: (state, page) => {
-            console.info(page);
             state.pageNo = page.pageNo;
             state.pageSize = page.pageSize;
         },

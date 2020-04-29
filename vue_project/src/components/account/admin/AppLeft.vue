@@ -44,6 +44,11 @@ export default {
                     url: "/user/question"
                 },
                 {
+                    name: "习题测试",
+                    icon: "iconfont icon-people_fill",
+                    url: "/user/exam"
+                },
+                {
                     name: "书籍管理",
                     icon: "iconfont icon-people_fill",
                     url: "/user/book"

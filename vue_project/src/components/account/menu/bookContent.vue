@@ -532,7 +532,6 @@ export default {
     },
     //请求数据
     pageList() {
-      console.info(this.getBookId);
       if (!this.getBookId) {
         this.$alert("未选择书籍");
         return;
@@ -756,10 +755,6 @@ export default {
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
-    console.info("BookId:" + this.getBookId);
-    console.info("BookName:" + this.getBookName);
-    console.info("ChapterId:" + this.getChapterId);
-    console.info("ChapterName:" + this.getChapterName);
     this.pageList();
     this.getTreeData();
   },

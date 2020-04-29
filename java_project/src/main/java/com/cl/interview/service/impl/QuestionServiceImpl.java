@@ -4,6 +4,7 @@ import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.config.BaseConfig;
 import com.cl.interview.dto.QuestionDto;
+import com.cl.interview.util.ClassUtils;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.common.IdGenerator;
 import com.cl.interview.common.Page;
@@ -16,6 +17,7 @@ import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -91,7 +93,7 @@ public class QuestionServiceImpl implements QuestionService {
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        save(new QuestionPo(dto));
+        save((QuestionPo) ClassUtils.inheritValue(po, dto, null));
 
         return resp;
     }
@@ -172,7 +174,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Transient
     public Map<String, Object> getWhereParam(QuestionPo t) {
         Map<String, Object> params = new HashMap<String, Object>();
-
+        if (!StringUtils.isEmpty(t.getCateId())) {
+            params.put("cateId", t.getCateId());
+        }
         return params;
 
     }
@@ -180,6 +184,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Transient
     public String getWhereSql(QuestionPo t) {
         StringBuffer sb = new StringBuffer("where 1=1");
+        if (!StringUtils.isEmpty(t.getCateId())) {
+            sb.append(" and cateId = :cateId ");
+        }
         return sb.toString();
     }
 }

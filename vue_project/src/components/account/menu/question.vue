@@ -13,18 +13,14 @@
     <div style="float:right;">
       <div style="float:left;margin-right:25px;">
         <el-select
-          v-model="value"
+          v-model="filterText"
           placeholder="请选择查询条件"
-          @change="changeValue"
+          @change="changeFilterValue"
           style="width:120px;left:10px;"
           size="mini"
         >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
+          <el-option label="无" value></el-option>
+          <el-option v-for="item in cates" :key="item.value" :label="item.text" :value="item.value"></el-option>
         </el-select>
         <el-input v-model="search" placeholder="请输入查询内容" style="width:140px;left:10px;" size="mini"></el-input>
         <el-button
@@ -131,7 +127,12 @@
         </el-form-item>
         <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
           <el-select v-model="formNew.cateId" placeholder="请选择分类" @change="changeValue" style>
-            <el-option v-for="item in roleNew" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in cates"
+              :key="item.value"
+              :label="item.text"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
@@ -158,7 +159,7 @@
       修改
     </el-button>
 
-    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate">
+    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
@@ -168,10 +169,10 @@
         <el-form-item label="分类" :label-width="formLabelWidth" class="item100" prop="cateId">
           <el-select v-model="formUpdate.cateId" placeholder="请选择查询条件" @change="changeValue" style>
             <el-option
-              v-for="item in roleUpdate"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              v-for="item in cates"
+              :key="item.value"
+              :label="item.text"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -233,7 +234,7 @@
         prop="cateId"
         :show-overflow-tooltip="true"
         label="分类"
-        :filters="[{text: 'JAVA', value: 'JAVA'},{text: 'HTML', value: 'HTML'},{text: 'VUE', value: 'VUE'},]"
+        :filters="cates"
         :filter-method="filterHandler"
         width="180"
         v-if="showArray[2].isShow"
@@ -271,7 +272,7 @@
 </template>
  
  <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 export default {
   name: "manager",
   inject: ["reload"],
@@ -285,14 +286,7 @@ export default {
       ],
       tableDataArr: [],
       //右侧选择项
-      options: [
-        {
-          value: "标题",
-          label: "标题"
-        }
-      ],
-      value: "标题",
-      search: "",
+      filterText: "无",
       totalCount: 0,
       //表格数据
       tableData: [],
@@ -357,17 +351,23 @@ export default {
         pageSize: 20,
         Authorization: ""
       },
-      roleNew: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
+      cates: [
+        { value: "JAVA", text: "JAVA" },
+        { value: "HTML", text: "HTML" },
+        { value: "DB", text: "DB" },
+        { value: "VUE", text: "VUE" }
       ],
-      roleUpdate: [
-        { id: "JAVA", name: "JAVA" },
-        { id: "HTML", name: "HTML" },
-        { id: "VUE", name: "VUE" }
-      ]
+      search: "",
+      filterCateValue: ""
     };
+  },
+
+  computed: {
+    // 使用对象展开运算符将 getter 混入 computed 对象中
+    ...mapGetters({
+      getSearch: "getQuestionSearch",
+      getCateId: "getQuestionCateId"
+    })
   },
   components: {},
   methods: {
@@ -459,18 +459,31 @@ export default {
     changeValue(val) {
       //console.log(this.value)
     },
-    //点击搜索的时候
-    blurInput() {
-      console.log(this.search);
-      this.pageList();
+    //右侧选择条件
+    changeFilterValue(val) {
+      console.log(val);
+      this.filterText = "无";
+      this.filterCateValue = val;
+      for (let index = 0; index < this.cates.length; index++) {
+        const element = this.cates[index];
+        if (element.value == val) {
+          this.filterText = element.text;
+          break;
+        }
+      }
     },
 
+    //点击搜索的时候
+    blurInput() {
+      this.pageList();
+    },
     ...mapMutations(["SET_PAGE"]),
     //请求数据
     pageList() {
       this.SET_PAGE(this.page); //保存一下页面信息  避免reload参数为空
       this.page = {
         search: this.search,
+        cateId: this.filterCateValue,
         pageNo: this.page.pageNo,
         pageSize: this.page.pageSize,
         Authorization: this.access_token
@@ -514,7 +527,7 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
-                this.pageList();
+                this.reload();
               } else {
                 this.$alert("提交失败");
               }
@@ -638,6 +651,8 @@ export default {
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
+    this.search = this.getSearch;
+    this.changeFilterValue(this.getCateId)
     this.pageList();
   },
   destroyed() {}

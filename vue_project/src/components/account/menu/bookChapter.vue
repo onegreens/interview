@@ -491,7 +491,6 @@ export default {
     },
     //请求数据
     pageList() {
-      console.info(this.getBookId);
       if (!this.getBookId) {
         this.$alert("未选择书籍");
         return;
@@ -543,7 +542,6 @@ export default {
               label: "无"
             });
             this.treeData = treeData;
-            console.info(this.treeData);
           } else {
             this.$message({
               type: "warning",
@@ -560,7 +558,6 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //提交时验证章节是否重复
-          console.info(this.formNew);
           this.formNew.bookId = this.getBookId;
           this.formNew.Authorization = this.access_token;
           this.$store
@@ -697,8 +694,6 @@ export default {
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
-    console.info(this.getBookId);
-    console.info(this.getBookName);
     this.pageList();
     this.getTreeData();
   },

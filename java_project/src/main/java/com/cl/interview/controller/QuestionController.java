@@ -30,9 +30,11 @@ public class QuestionController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
-                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search) {
+                         @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search, @RequestParam String cateId
+    ) {
         HttpResp resp = new HttpResp();
         QuestionPo po = new QuestionPo();
+        po.setCateId(cateId);
         try {
             resp.setData(service.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
         } catch (Exception e) {
@@ -101,7 +103,7 @@ public class QuestionController {
      */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public HttpResp importExcel(HttpServletRequest request,
-                                      @RequestHeader(value = "Authorization", required = false) String token) {
+                                @RequestHeader(value = "Authorization", required = false) String token) {
         HttpResp response = new HttpResp();
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         try {

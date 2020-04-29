@@ -1,29 +1,48 @@
 //import {getInfo, login, logout} from '@/api/login'
-import { default as api } from '../../utils/api'
+import {
+    default as api
+} from '../../utils/api'
 import store from '../../store'
 import router from '../../router'
 import axios from 'axios';
 
 const question = {
     state: {
-
+        search: "",
+        cateId: "",
     },
     mutations: {
-
+        SET_QUESTION_SEARCH: (state, search) => {
+            console.info("search:" + search);
+            state.search = search;
+        },
+        SET_QUESTION_CATE: (state, cateId) => {
+            console.info("cateId:" + cateId);
+            state.cateId = cateId;
+        }
+    },
+    getters: {
+        getQuestionSearch(state) {
+            return state.search
+        },
+        getQuestionCateId(state) {
+            return state.cateId
+        }
     },
     actions: {
-        questionList({ commit, state }, page) {
+        questionList({
+            commit,
+            state
+        }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
                 //避免reload时没有参数
-            if (!page.pageNo) {
-                page.pageNo = 1;
-            }
-            if (!page.pageSize) {
-                page.pageSize = 20;
-            }
+            page.pageNo = store.getters.getPageNo;
+            page.pageSize = store.getters.getPageSize;
+            commit('SET_QUESTION_SEARCH', page.search);
+            commit('SET_QUESTION_CATE', page.cateId);
             return new Promise((reject, resolve) => {
                 api({
-                    url: `/question/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
+                    url: `/question/list?pageNo=${page.pageNo}&search=${page.search}&cateId=${page.cateId}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
                     resolve(data)
@@ -32,7 +51,10 @@ const question = {
                 })
             })
         },
-        createQuestion({ commit, state }, page) {
+        createQuestion({
+            commit,
+            state
+        }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
@@ -47,7 +69,10 @@ const question = {
                 })
             })
         },
-        updateQuestion({ commit, state }, page) {
+        updateQuestion({
+            commit,
+            state
+        }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
@@ -62,7 +87,10 @@ const question = {
                 })
             })
         },
-        deleteQuestion({ commit, state }, page) {
+        deleteQuestion({
+            commit,
+            state
+        }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
@@ -76,7 +104,10 @@ const question = {
             })
         },
 
-        questionSerializable({ commit, state }, page) {
+        questionSerializable({
+            commit,
+            state
+        }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
             return new Promise((reject, resolve) => {
                 api({
@@ -89,7 +120,10 @@ const question = {
                 })
             })
         },
-        questionImportExcel({ commit, state }, page) {
+        questionImportExcel({
+            commit,
+            state
+        }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
             return new Promise((reject, resolve) => {

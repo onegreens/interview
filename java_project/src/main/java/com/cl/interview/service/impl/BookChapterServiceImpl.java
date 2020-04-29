@@ -14,6 +14,7 @@ import com.cl.interview.exception.ArgumentException;
 import com.cl.interview.po.BookChapterPo;
 import com.cl.interview.service.BookChapterService;
 import com.cl.interview.service.BookContentService;
+import com.cl.interview.util.ClassUtils;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.SerializableFile;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +150,7 @@ public class BookChapterServiceImpl implements BookChapterService {
             resp.setMessage("编辑习题信息失败，习题信息不存在");
             return resp;
         }
-        save(dto.toObject());
+        save((BookChapterPo) ClassUtils.inheritValue(po, dto, null));
         this.refreshCache();
         return resp;
     }
