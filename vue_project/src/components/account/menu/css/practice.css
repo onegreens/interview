@@ -27,3 +27,8 @@
 .clearfix:after {
     clear: both
 }
+
+.form-rate {
+    position: relative;
+    top: 10px;
+}

@@ -6,6 +6,7 @@ import com.cl.interview.entity.BookChapterEntity;
 import com.cl.interview.util.ClassUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -55,9 +56,10 @@ public class BookChapterPo implements Serializable, ToObject<BookChapterEntity> 
 
 
     @Override
-    public BookChapterEntity toObject() {if (this.id == null) {
-        this.setId(IdGenerator.nextId());
-    }
+    public BookChapterEntity toObject() {
+        if (StringUtils.isEmpty(this.id)) {
+            this.setId(IdGenerator.nextId());
+        }
         BookChapterEntity entity = (BookChapterEntity) ClassUtils.inheritValue(new BookChapterEntity(), this, new HashSet<String>() {
             {
                 add("parent");

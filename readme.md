@@ -29,16 +29,16 @@
 
   t_question
 
-| 字段        | 类型       | 说明     |
-| ----------- | ---------- | -------- |
-| id          | bigint(20) | 主键     |
-| type_id     | varchar    | 分类id   |
-| title       | varchar    | 题目     |
-| answer      | varchar    | 解答     |
-| href        | varchar    | 链接     |
-| img         | varchar    | 图片     |
-| create_time | date       | 创建时间 |
-| user_id     | bigint(20) | 用户id   |
+| 字段        | 类型    | 说明     |
+| ----------- | ------- | -------- |
+| id          | varchar | 主键     |
+| type_id     | varchar | 分类id   |
+| title       | varchar | 题目     |
+| answer      | varchar | 解答     |
+| href        | varchar | 链接     |
+| img         | varchar | 图片     |
+| create_time | date    | 创建时间 |
+| user_id     | varchar | 用户id   |
 
 - 待处理项
   - 未对应分类id
@@ -54,15 +54,33 @@
 
   t_question_category
 
-| 字段      | 类型       | 说明     |
-| --------- | ---------- | -------- |
-| id        | bigint(20) | 主键     |
-| name      | varchar    | 名称     |
-| parent_id | bigint(20) | 父分类id |
+| 字段      | 类型    | 说明     |
+| --------- | ------- | -------- |
+| id        | varchar | 主键     |
+| name      | varchar | 名称     |
+| parent_id | varchar | 父分类id |
 
 - 待处理项
   - 创建管理页面及相应后台逻辑
   - 补全与试题模块的关联
+
+### 试题练习模块
+
+- 说明
+  - 对试题的检测
+- 数据库表
+- t_practice
+
+| 字段         | 类型     | 说明         |
+| ------------ | -------- | ------------ |
+| id           | varchar  | 主键         |
+| question_id  | varchar  |              |
+| user_id      | varchar  |              |
+| score        | int      | 掌握程度     |
+| update_time  | datetime |              |
+| score_record | varchar  | 掌握程度记录 |
+
+
 
 ### 试题测试模块
 
@@ -75,7 +93,7 @@
 
 | 字段        | 类型     | 说明                      |
 | ----------- | -------- | ------------------------- |
-| id          | int      | 主键                      |
+| id          | varchar  | 主键                      |
 | list        | varchar  | 以下划线分隔的question_id |
 | score       | int      | 分数                      |
 | user_id     | int      | 用户                      |
@@ -85,7 +103,7 @@
 
 | 字段        | 类型     | 说明               |
 | ----------- | -------- | ------------------ |
-| id          | int      | 主键               |
+| id          | varchar  | 主键               |
 | exam_id     | int      | 试题集id           |
 | question_id | int      | 试题id             |
 | cate_id     | varchat  | 试题类型(方便统计) |
@@ -108,11 +126,11 @@
 
 | 字段        | 类型    | 说明                             |
 | ----------- | ------- | -------------------------------- |
-| id          | bigint(20) | 主键                             |
+| id          | varchar | 主键                             |
 | name        | varchar | 名称,parent_id为0时,该名称为书名 |
 | type | varchar | 类型 |
 | create_time | date    | 创建时间                         |
-| user_id     | bigint(20) | 用户id   |
+| user_id     | varchar | 用户id   |
 
 
 ### 书籍章节模块
@@ -127,15 +145,15 @@
 
 | 字段        | 类型    | 说明                             |
 | ----------- | ------- | -------------------------------- |
-| id          | bigint(20) | 主键                             |
-| book_id |  |  |
+| id          | varchar | 主键                             |
+| book_id | varchar |  |
 | name        | varchar | 名称,parent_id为0时,该名称为书名/章节 |
 | sort       | int     | 排序                             |
 | page        | int(4)  | 页码                             |
 | create_time | date    | 创建时间                         |
-| parent_id   | bigint(20) | 父id                             |
+| parent_id   | varchar | 父id                             |
 | level | int(2) | 层级 |
-| user_id     | bigint(20) | 用户id   |
+| user_id     | varchar | 用户id   |
 
 ### 书籍笔记模块
 
@@ -146,16 +164,16 @@
 
   t_book_content
 
-| 字段        | 类型       | 说明     |
-| ----------- | ---------- | -------- |
-| id          | bigint(20) | 主键     |
-| title       | varchar    | 主题     |
-| content     | varchat    | 内容     |
-| think       | varchar    | 见解     |
-| degree      | int        | 重要程度 |
-| create_time | date       | 创建时间 |
-| book_id     | bigint(20) | 书籍id   |
-| user_id     | bigint(20) | 用户id   |
+| 字段        | 类型    | 说明     |
+| ----------- | ------- | -------- |
+| id          | varchar | 主键     |
+| title       | varchar | 主题     |
+| content     | varchat | 内容     |
+| think       | varchar | 见解     |
+| degree      | int     | 重要程度 |
+| create_time | date    | 创建时间 |
+| book_id     | varchar | 书籍id   |
+| user_id     | varchar | 用户id   |
 
 ## 待实现
 

@@ -44,9 +44,9 @@ export default {
                     url: "/user/question"
                 },
                 {
-                    name: "习题测试",
+                    name: "习题练习",
                     icon: "iconfont icon-people_fill",
-                    url: "/user/exam"
+                    url: "/user/practice"
                 },
                 {
                     name: "书籍管理",

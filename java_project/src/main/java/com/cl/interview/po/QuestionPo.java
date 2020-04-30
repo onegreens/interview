@@ -8,6 +8,7 @@ import com.cl.interview.util.ClassUtils;
 import com.cl.interview.util.SerializableFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -40,7 +41,8 @@ public class QuestionPo implements Serializable ,ToObject<QuestionEntity> {
     }
 
     @Override
-    public QuestionEntity toObject() { if (this.id == null) {
+    public QuestionEntity toObject() {
+        if (StringUtils.isEmpty(this.id)) {
         this.setId(IdGenerator.nextId());
     }
         return (QuestionEntity) ClassUtils.inheritValue(new QuestionEntity(), this,null);

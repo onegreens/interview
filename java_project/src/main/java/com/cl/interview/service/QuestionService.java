@@ -20,7 +20,7 @@ public interface QuestionService extends CommonService<QuestionPo> {
      * @param orderBysList
      * @return
      */
-    public Page getDataByPage(int pageNo, int pageSize, QuestionPo obj, List<String> orderBysList, String search);
+    Page getDataByPage(int pageNo, int pageSize, QuestionPo obj, List<String> orderBysList, String search);
 
 
     HttpResp create(QuestionDto dto);

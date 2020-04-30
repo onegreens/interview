@@ -264,6 +264,7 @@
 </template>
  
  <script>
+import { default as util } from "../../../utils/util.js";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 export default {
@@ -271,7 +272,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      left:"left",
+      left: "left",
       showArray: [
         { label: "章节", isShow: true },
         { label: "页码", isShow: true },
@@ -508,7 +509,14 @@ export default {
         .then(res => {
           if (res.code == 0) {
             console.log(res.data.result);
-            this.tableData = res.data.result;
+            var tableData = res.data.result;
+            for (let index = 0; index < tableData.length; index++) {
+              const element = tableData[index];
+              if (element.children) {
+                util.bubbleSortObj(element.children, "sort");
+              }
+            }
+            this.tableData = tableData;
             this.tableDataArr = res.data.result;
             this.totalCount = res.data.totalCount;
           } else {

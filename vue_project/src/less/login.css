@@ -39,9 +39,5 @@ img {
 .el-table th div,
 .el-table--border td:first-child .cell,
 .el-table--border th:first-child .cell {
-    text-align: center;
-}
-
-.el-table-filter {
-    text-align: left;
+    /* text-align: center; */
 }

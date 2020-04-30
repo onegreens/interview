@@ -120,3 +120,10 @@
 .el-table {
     font-weight: 900;
 }
+
+.el-table .cell,
+.el-table th div,
+.el-table--border td:first-child .cell,
+.el-table--border th:first-child .cell {
+    text-align: left;
+}

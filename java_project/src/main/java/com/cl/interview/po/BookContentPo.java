@@ -6,6 +6,7 @@ import com.cl.interview.entity.BookContentEntity;
 import com.cl.interview.util.ClassUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -37,7 +38,7 @@ public class BookContentPo implements Serializable, ToObject<BookContentEntity> 
 
     @Override
     public BookContentEntity toObject() {
-        if (this.id == null) {
+        if (StringUtils.isEmpty(this.id)) {
             this.setId(IdGenerator.nextId());
         }
         BookContentEntity entity = (BookContentEntity) ClassUtils.inheritValue(new BookContentEntity(), this, null);

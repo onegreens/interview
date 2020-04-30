@@ -18,7 +18,6 @@ public class BookEntity implements ToObject<BookPo> {
     }
 
     @Id
-
     @Column(name="ID")
     private String id;
     @Column(name = "name")

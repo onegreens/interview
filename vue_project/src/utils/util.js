@@ -33,9 +33,7 @@ function bubbleSort(array) {
     for (let index = 0; index < len; index++) {
         for (let next = 0; next < len - 1 - index; next++) {
             if (array[next] > array[next + 1]) {
-                var el = array[next];
-                array[next] = array[next + 1];
-                array[next + 1] = el;
+                swapArray(array, next + 1, next)
             }
 
         }
@@ -47,13 +45,22 @@ function bubbleSortObj(array, prop) {
     for (let index = 0; index < len; index++) {
         for (let next = 0; next < len - 1 - index; next++) {
             if (array[next][prop] > array[next + 1][prop]) {
-                var el = array[next];
-                array[next] = array[next + 1];
-                array[next + 1] = el;
+                swapArray(array, next + 1, next)
             }
-
         }
     }
+}
+/**
+ * 调换位置
+ * @param {*} array 
+ * @param {*} pre 
+ * @param {*} next 
+ */
+function swapArray(array, pre, next) {
+    var el = array[pre];
+    array[pre] = array[next];
+    array[next] = el;
+
 }
 
 export default {
