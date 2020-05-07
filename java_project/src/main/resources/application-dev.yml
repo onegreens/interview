@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/interview?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: root
-    password: 123456
+    password: root
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
@@ -24,4 +24,4 @@ idGenerator:
 
 web:
   file:
-    path: D:\interview\interview\java_project\src\main\web
+    path: /home/fuyun/github/interview/java_project/src/main/web

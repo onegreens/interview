@@ -14,21 +14,21 @@
                             <img src="/static/login_title_2.jpeg" alt="">
                             <p>快乐习题</p>
                         </div>
-                <!-- <el-form-item label="" prop="username"> -->
+               <!--  <el-form-item label="" prop="username">-->
                     <!-- v-model双向数据绑定, 需要绑定data里的数据, 将来要把这些数据提交给后端 -->
                   <div class="login_input_box">
                     <i class="iconfont icon-group"></i>
                     <input type="text" v-model="ruleForm1.username" auto-complete="off" class="login_input" placeholder="用户名"/>
                     </div>
-                <!-- </el-form-item> -->
+               <!-- </el-form-item>-->
 
-                <!-- <el-form-item label="" prop="password"> -->
+               <!-- <el-form-item label="" prop="password">-->
                     <!-- 双向数据绑定对象的密码,这个对象就是传入后台的参数对象 -->
                     <div class="login_password_box">
                       <i class="iconfont icon-lock_fill"></i>
                      <input type="password" v-model="ruleForm1.password" auto-complete="off" class="login_password" placeholder="密码"/>
                      </div>
-                <!-- </el-form-item> -->
+               <!-- </el-form-item>-->
 
                 <!-- <el-form-item label="" prop="yz_password" style=""> -->
                     <!-- 双向数据绑定对象的密码,这个对象就是传入后台的参数对象 -->
@@ -39,7 +39,7 @@
                     <input type="button" id="code" @click="createCode" class="verification1" v-model="checkCode"/> <br>
                     <!-- <span class="tishixiaoxi"></span> -->
                     
-                    <!-- <a class="user_login" @click="Login">登录</a> -->
+                    <a class="user_login" @click="Login">登录</a> 
                 <!-- </el-form-item> -->
 
                 <!-- <el-form-item style=""> -->
@@ -118,12 +118,14 @@ export default {
       if(this.checkLpicma()){
           //请求登录是否正确
            let ruleFormData = this.ruleForm1;
-            // ruleFormData.password  = md5(this.ruleForm1.password)
+
+           //ruleFormData.password  = md5(this.ruleForm1.password);
+           
             this.$store.dispatch('Login',ruleFormData).then(res=>{
                console.log(res)
               if(res.access_token){
                 // console.log(res)
-                let uname = this.ruleForm1.username
+                let uname = this.ruleForm1.username;
                 localStorage.setItem('uname',uname);
                 localStorage.setItem('access_token',res.access_token);
                 // let redirect = decodeURIComponent(this.$route.query.redirect || '/user/product');  //获取登录成功后要跳转的路由。

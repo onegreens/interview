@@ -20,15 +20,15 @@ public enum IoTErrorCode {
     token_invalid(3001),
     server_error(9999);
 
-    private int errorCode;
+    private int ErrorCode;
 
-    IoTErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    IoTErrorCode(int Code) {
+        this.ErrorCode = Code;
     }
 
     @JsonValue
     public int getErrorCode() {
-        return errorCode;
+        return ErrorCode;
     }
 
 }
