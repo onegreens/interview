@@ -18,7 +18,6 @@ public class QuestionEntity implements ToObject<QuestionPo> {
     }
 
     @Id
-
     @Column(name="ID")
     private String id;
     @Column(name = "cate_id")

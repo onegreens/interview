@@ -22,7 +22,6 @@ import static com.cl.interview.common.Constant.LOG_NAME;
 
 @Slf4j
 @RestController
-
 @RequestMapping("/bookContent")
 public class BookContentController {
     @Autowired
