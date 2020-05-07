@@ -457,7 +457,8 @@ export default {
     },
     //右侧选择条件
     changeValue(val) {
-      //console.log(this.value)
+
+      console.log(this.value)
     },
     //右侧选择条件
     changeFilterValue(val) {
