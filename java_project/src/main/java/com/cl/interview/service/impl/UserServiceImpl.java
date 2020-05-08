@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
         if (byUsername == 0){
             return HttpResp.fail("用户名不存在");
         }
-        UserEntity userEntity = userDao.selectLogin(username,password);
+        UserEntity userEntity = userDao.findByUsernameAndPassword(username,password);
         if (userEntity == null){
             return HttpResp.fail("密码错误，请重新输入密码");
         }

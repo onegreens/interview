@@ -39,7 +39,7 @@
                     <input type="button" id="code" @click="createCode" class="verification1" v-model="checkCode"/> <br>
                     <!-- <span class="tishixiaoxi"></span> -->
                     
-                    <a class="user_login" @click="Login">登录</a> 
+                    <!-- <a class="user_login" @click="Login">登录</a>  -->
                 <!-- </el-form-item> -->
 
                 <!-- <el-form-item style=""> -->

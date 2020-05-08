@@ -15,7 +15,7 @@ public class BookDto implements ToObject<BookPo> {
     private String type;
     private String userId;
     private Date createTime;
-    private Integer noteNum;
+    private Integer noteNum = 0;
 
     @Override
     public BookPo toObject() {

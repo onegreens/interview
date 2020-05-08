@@ -89,8 +89,8 @@ public class BookChapterServiceImpl implements BookChapterService {
     private void format(BookChapterDto obj) throws ArgumentException {
         if (obj.getLevel() == null) {
             if (StringUtils.isEmpty(obj.getParentId())) {
-
                 obj.setLevel(1);
+                obj.setParentId(null);
             } else {
                 BookChapterPo parent = getOne(obj.getParentId());
                 obj.setLevel(parent.getLevel() + 1);
