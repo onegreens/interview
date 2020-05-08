@@ -37,21 +37,23 @@ const user = {
         Login({ commit, state }, loginForm) {
             return new Promise((reject, resolve) => {
 
-                resolve({ access_token: "123456", uname: "张三" })
-                    // api({
-                    //     url: `oauth/token?grant_type=password&username=${loginForm.username}&password=${loginForm.password}`,
-                    //     method: "post",
-                    // }).then(data => {
-                    //     // if (data.result === "success") {
-                    //     //   //cookie中保存前端登录状态
-                    //     //   setToken();
-                    //     // }
-                    //     // console.log('success ====> ');
-                    //     resolve(data);
-                    // }).catch(err => {
-                    //     // console.log('error ==== > '+JSON.stringify(err))
-                    //     reject(err)
-                    // })
+                //resolve({ access_token: "123456", uname: "张三" })
+                api({
+                    url: `token/login?username=${loginForm.username}&password=${loginForm.password}`,
+                    method: "post",
+                }).then(res => {
+                    if (res.code === 0) {
+                        
+                        //cookie中保存前端登录状态
+                        //setToken();
+                        this.$store.commit("Authorization",res.data.token);
+                    }
+                    console.log('success ====> ');
+                    resolve(res.data);
+                }).catch(err => {
+                    console.log('error ==== > ' + JSON.stringify(err))
+                    reject(err)
+                })
             })
         },
         // 获取用户信息
