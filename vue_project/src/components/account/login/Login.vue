@@ -39,7 +39,7 @@
                     <input type="button" id="code" @click="createCode" class="verification1" v-model="checkCode"/> <br>
                     <!-- <span class="tishixiaoxi"></span> -->
                     
-                    <!-- <a class="user_login" @click="Login">登录</a>  -->
+                   <!-- <a class="user_login" @click="Login">登录</a> -->
                 <!-- </el-form-item> -->
 
                 <!-- <el-form-item style=""> -->
@@ -123,11 +123,11 @@ export default {
            
             this.$store.dispatch('Login',ruleFormData).then(res=>{
                console.log(res)
-              if(res.access_token){
+              if(res.token){
                 // console.log(res)
                 let uname = this.ruleForm1.username;
                 localStorage.setItem('uname',uname);
-                localStorage.setItem('access_token',res.access_token);
+                localStorage.setItem('access_token',res.token);
                 // let redirect = decodeURIComponent(this.$route.query.redirect || '/user/product');  //获取登录成功后要跳转的路由。
                 // console.log(typeof redirect)
                 // this.$router.push({

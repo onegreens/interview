@@ -17,7 +17,7 @@ const practice = {
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
                 //避免reload时没有参数
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/practice/list?pageNo=${page.pageNo}&cateId=${page.cateId}&score=${page.score}&pageSize=${page.pageSize}`,
                     method: 'get'
@@ -33,7 +33,7 @@ const practice = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/practice/save`,
                     method: 'post',

@@ -28,6 +28,7 @@ public class QuestionController {
     @Autowired
     QuestionService service;
 
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public HttpResp List(HttpServletRequest request,
                          @RequestHeader(value = "Authorization", required = false) String token, @RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String search, @RequestParam String cateId
@@ -89,7 +90,7 @@ public class QuestionController {
     public HttpResp doSerializable(@RequestHeader(value = "Authorization") String token,
                                    HttpServletRequest request) {
         HttpResp resp = new HttpResp();
-        service.doSerializable();
+//        service.doSerializable();
         return resp;
     }
 

@@ -21,7 +21,7 @@ const bookContent = {
             if (!page.pageSize) {
                 page.pageSize = 20;
             }
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/list?pageNo=${page.pageNo}&bookId=${page.bookId}&chapterId=${page.chapterId}&search=${page.search}&pageSize=${page.pageSize}`,
                     method: 'get'
@@ -34,7 +34,7 @@ const bookContent = {
         },
         createBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/create`,
                     method: 'post',
@@ -49,7 +49,7 @@ const bookContent = {
         },
         updateBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/update`,
                     method: 'post',
@@ -64,7 +64,7 @@ const bookContent = {
         },
         deleteBookContent({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/${page.id}/delete`,
                     method: 'post',
@@ -78,7 +78,7 @@ const bookContent = {
 
         bookContentSerializable({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/doSerializable`,
                     method: 'post',
@@ -92,7 +92,7 @@ const bookContent = {
         bookContentImportExcel({ commit, state }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookContent/importExcel`,
                     method: "post",

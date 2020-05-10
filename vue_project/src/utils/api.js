@@ -25,26 +25,26 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
   response => {
-    // console.log(response)
     const res = response.data;
+    console.info(res);
     //比如判断token失效为1000
-    if (res.returnCode == '1000') {
+    if (res.code == '1000') {
       //清空
       // localStorage.setItem('access_token','')
       // //强制跳转
       // window.location.href = '/user/login'
       return res;
     }
-    if (res.returnCode == '100') {
-      return res.returnData;
-    } else if (res.returnCode == "20011") {
+    if (res.code == '0') {
+      return res;
+    } else if (res.code == "20011") {
       return Promise.reject("未登录")
     } else {
       return Promise.reject(res)
     }
   },
   error => {
-    //console.error('err' + error)// for debug
+    console.error('err' + error)// for debug
     // Message({
     //   message: error.message,
     //   type: 'error',

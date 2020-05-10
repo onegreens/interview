@@ -40,7 +40,7 @@ const question = {
             page.pageSize = store.getters.getPageSize;
             commit('SET_QUESTION_SEARCH', page.search);
             commit('SET_QUESTION_CATE', page.cateId);
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/question/list?pageNo=${page.pageNo}&search=${page.search}&cateId=${page.cateId}&pageSize=${page.pageSize}`,
                     method: 'get'
@@ -56,7 +56,7 @@ const question = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/question/create`,
                     method: 'post',
@@ -74,7 +74,7 @@ const question = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/question/update`,
                     method: 'post',
@@ -92,7 +92,7 @@ const question = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/question/${page.id}/delete`,
                     method: 'post',
@@ -109,7 +109,7 @@ const question = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/question/doSerializable`,
                     method: 'post',
@@ -126,7 +126,7 @@ const question = {
         }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
 
                     url: `/question/importExcel`,

@@ -34,13 +34,15 @@ const book = {
                 //避免reload时没有参数
             page.pageNo = store.getters.getPageNo;
             page.pageSize = store.getters.getPageSize;
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/list?pageNo=${page.pageNo}&search=${page.search}&pageSize=${page.pageSize}`,
                     method: 'get'
                 }).then(data => {
+                    console.info("success")
                     resolve(data)
                 }).catch(error => {
+                    console.info("error")
                     reject(error)
                 })
             })
@@ -50,7 +52,7 @@ const book = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/create`,
                     method: 'post',
@@ -68,7 +70,7 @@ const book = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/update`,
                     method: 'post',
@@ -86,7 +88,7 @@ const book = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/${page.id}/delete`,
                     method: 'post',
@@ -102,7 +104,7 @@ const book = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/toMDFile?bookId=${page.bookId}`,
                     method: 'get',
@@ -118,7 +120,7 @@ const book = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/book/doSerializable`,
                     method: 'post',
@@ -135,7 +137,7 @@ const book = {
         }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
 
                     url: `/book/importExcel`,

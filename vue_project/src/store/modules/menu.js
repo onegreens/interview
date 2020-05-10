@@ -15,7 +15,7 @@ const menu = {
         // 获取角色菜单列表
         menuList({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/getMenuByRole?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
                     method: "get"
@@ -29,7 +29,7 @@ const menu = {
         //创建菜单
         createMenu({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/create`,
                     method: "post",
@@ -44,7 +44,7 @@ const menu = {
         //删除菜单
         deleteMenu({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/${page.id}/delete`,
                     method: "post",
@@ -58,7 +58,7 @@ const menu = {
         //修改菜单
         updateMenu({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/update`,
                     method: "post",
@@ -74,7 +74,7 @@ const menu = {
         bindMenu({ commit, state }, page) {
             let menuIdList = `${page.menuIdList}`
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/${page.roleId}/bindMenu?menuIdList=${menuIdList}`,
                     method: "post",
@@ -88,7 +88,7 @@ const menu = {
         //菜单列表
         Menu({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/menu/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
                     method: "get",

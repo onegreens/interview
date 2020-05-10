@@ -468,6 +468,7 @@ export default {
       this.$store
         .dispatch("bookList", page)
         .then(res => {
+          console.info(res);
           if (res.code == 0) {
             console.log(res.data.result);
             this.tableData = res.data.result;
@@ -481,8 +482,11 @@ export default {
           }
         })
         .catch(e => {
+          
+          console.info("error");
           this.$alert("未知错误");
         });
+
     },
     //提交新建信息
     submitForm(formName) {

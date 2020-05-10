@@ -1,6 +1,9 @@
 package com.cl.interview.service.impl;
 
 import com.cl.interview.common.HttpResp;
+import com.cl.interview.common.IoTErrorCode;
+import com.cl.interview.config.token.RedisTokenImpl;
+import com.cl.interview.config.token.TokenModel;
 import com.cl.interview.dao.UserDao;
 import com.cl.interview.entity.UserEntity;
 import com.cl.interview.service.UserService;
@@ -8,13 +11,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
 
-    public HttpResp<UserEntity> login(String username,String password){
+    @Autowired
+    private RedisTokenImpl redisToken;
+
+    public HttpResp login(String username,String password){
+        Map<String,Object> objectMap = new HashMap<>();
         int byUsername = userDao.findByUsername(username);
         if (byUsername == 0){
             return HttpResp.fail("用户名不存在");
@@ -23,8 +33,14 @@ public class UserServiceImpl implements UserService {
         if (userEntity == null){
             return HttpResp.fail("密码错误，请重新输入密码");
         }
+        HttpResp resp  = new HttpResp();
+        TokenModel tokenModel = redisToken.create(userEntity.getId());
+        objectMap.put("token",tokenModel.getToken());
+        resp.setData(objectMap);
+        resp.setMessage("登录成功");
         userEntity.setPassword(StringUtils.EMPTY);
-        return HttpResp.createBySuccess("登录成功",userEntity);
+        objectMap.put("userInfo",userEntity);
+        return HttpResp.createBySuccess("登录成功",objectMap);
     }
 
 }

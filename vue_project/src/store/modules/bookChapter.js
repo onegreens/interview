@@ -38,7 +38,7 @@ const bookChapter = {
             if (!page.pageSize) {
                 page.pageSize = 20;
             }
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/list?pageNo=${page.pageNo}&search=${page.search}&bookId=${page.bookId}&pageSize=${page.pageSize}`,
                     method: 'get'
@@ -54,7 +54,7 @@ const bookChapter = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/treeData?bookId=${page.bookId}`,
                     method: 'get'
@@ -70,7 +70,7 @@ const bookChapter = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/create`,
                     method: 'post',
@@ -88,7 +88,7 @@ const bookChapter = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/update`,
                     method: 'post',
@@ -105,7 +105,7 @@ const bookChapter = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/${page.id}/delete`,
                     method: 'post',
@@ -122,7 +122,7 @@ const bookChapter = {
             state
         }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/bookChapter/doSerializable`,
                     method: 'post',
@@ -139,7 +139,7 @@ const bookChapter = {
         }, page) {
             let Authorization = page.get("Authorization")
             axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
 
                     url: `/bookChapter/importExcel`,

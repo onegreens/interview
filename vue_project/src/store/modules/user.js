@@ -33,31 +33,31 @@ const user = {
         }
     },
     actions: {
+
         // 登录
         Login({ commit, state }, loginForm) {
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
+                api({
+                    url: `/token/login?username=${loginForm.username}&password=${loginForm.password}`,
+                    method: 'get'
+                }).then(data => {
+                    if (data.code === 0) {
 
-                resolve({ access_token: "123456", uname: "张三" })
-                    // api({
-                    //     url: `oauth/token?grant_type=password&username=${loginForm.username}&password=${loginForm.password}`,
-                    //     method: "post",
-                    // }).then(data => {
-                    //     // if (data.result === "success") {
-                    //     //   //cookie中保存前端登录状态
-                    //     //   setToken();
-                    //     // }
-                    //     // console.log('success ====> ');
-                    //     resolve(data);
-                    // }).catch(err => {
-                    //     // console.log('error ==== > '+JSON.stringify(err))
-                    //     reject(err)
-                    // })
+                        //cookie中保存前端登录状态
+                        //setToken();
+                        store.commit("Authorization",data.data.token);
+                    }
+                    resolve(data);
+                }).catch(error => {
+                    console.info("error");
+                    reject(error)
+                })
             })
         },
         // 获取用户信息
         userList({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
 
                 api({
                     url: `/user/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
@@ -82,7 +82,7 @@ const user = {
         // 创建用户
         createUser({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/user/create`,
                     method: 'post',
@@ -98,7 +98,7 @@ const user = {
         // 修改用户
         updateUser({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/user/update`,
                     method: 'post',
@@ -115,7 +115,7 @@ const user = {
         // 删除用户
         deleteUser({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/user/${page.userId}/delete`,
                     method: 'post',
@@ -129,7 +129,7 @@ const user = {
         // 角色列表
         roleList({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/role/list?pageNo=${page.pageNo}&pageSize=${page.pageSize}`,
                     method: 'get',
@@ -143,7 +143,7 @@ const user = {
         // 删除角色
         deleteRole({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/role/${page.id}/delete`,
                     method: 'post',
@@ -157,7 +157,7 @@ const user = {
         // 创建角色
         createRole({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/role/create?name=${page.name}`,
                     method: 'post',
@@ -171,7 +171,7 @@ const user = {
         // 修改角色
         updateRole({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/role/updateRole`,
                     method: 'post',
@@ -186,7 +186,7 @@ const user = {
         // 修改 密码
         userSetPassword({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/user/${page.id}/setPassword`,
                     method: 'post',
@@ -201,7 +201,7 @@ const user = {
         // 查询用户名是否重复
         loadByUserName({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/user/loadByUserName?userName=${page.userName}`,
                     method: 'get',
@@ -215,7 +215,7 @@ const user = {
         // 首页统计数据
         homeAdmin({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/home/admin`,
                     method: 'get',
@@ -229,7 +229,7 @@ const user = {
         // 首页统计图表数据
         telemetryAttributesStatisByDay({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/telemetryAttributes/statisByDay?startTime=${page.startTime}&endTime=${page.endTime}`,
                     method: 'get',
@@ -243,7 +243,7 @@ const user = {
         //按属性名称统计遥测数量(统计分析页面)
         statisByDevAndAttributeName({ commit, state }, page) {
             axios.defaults.headers['Authorization'] = `bearer ${page.Authorization}`
-            return new Promise((reject, resolve) => {
+            return new Promise((resolve,reject) => {
                 api({
                     url: `/telemetryAttributes/${page.devId}/statisByDevAndAttributeName?startDate=${page.startDate}&endDate=${page.endDate}&attributeName=${page.attributeName}`,
                     method: 'get',
