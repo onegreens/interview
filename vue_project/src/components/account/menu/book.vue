@@ -330,7 +330,7 @@ export default {
   },
   components: {},
   methods: {
-    ...mapMutations(["SET_PAGE", "SET_BOOK"]),
+    ...mapMutations(["SET_PAGE", "SET_BOOK", "SET_BOOK_CHAPTER"]),
     //筛选
     filterHandler(value, row, column) {
       return row["type"] === value;

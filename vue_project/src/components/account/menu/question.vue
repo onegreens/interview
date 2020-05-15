@@ -136,7 +136,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formNew.answer" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formNew.answer" autosize auto-complete="off"></el-input> -->
+
+          <mavon-editor v-model="formNew.answer" />
         </el-form-item>
         <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
           <el-input v-model="formNew.href" auto-complete="off"></el-input>
@@ -159,7 +161,7 @@
       修改
     </el-button>
 
-    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center>
+    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center width="80%">
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
@@ -177,13 +179,25 @@
           </el-select>
         </el-form-item>
         <el-form-item label="解答" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formUpdate.answer" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formUpdate.answer" autosize auto-complete="off"></el-input> -->
+
+          <mavon-editor v-model="formUpdate.answer" />
         </el-form-item>
         <el-form-item label="链接" :label-width="formLabelWidth" class="item100" prop="href">
           <el-input v-model="formUpdate.href" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <div class="div-close-dialog" v-show="closeDialog == '1'">
+          <el-radio v-model="closeDialog" label="0">不关闭</el-radio>
+        </div>
+        <div class="div-close-dialog" v-show="closeDialog == '0'">
+          <el-radio v-model="closeDialog" label="1">关闭</el-radio>
+
+          <el-button @click="toNextItem(-1)">上一个</el-button>
+          <el-button @click="toNextItem(1)">下一个</el-button>
+        </div>
+
         <el-button @click="ruleFormUpdateNo">取 消</el-button>
         <el-button
           type="primary"
@@ -278,6 +292,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      closeDialog: "1", //修改完之后关闭窗口
       showArray: [
         { label: "标题", isShow: true },
         { label: "解答", isShow: true },
@@ -400,6 +415,33 @@ export default {
       }
     },
 
+    toNextItem(next) {
+      var cur = this.formUpdate;
+      var nextIndex = 0;
+      var len = this.tableData.length;
+      for (let index = 0; index < len; index++) {
+        const element = this.tableData[index];
+        if (cur.id == element.id) {
+          nextIndex = index + next;
+          break;
+        }
+      }
+      if (nextIndex == -1) {
+        this.$message({
+          type: "warning",
+          message: "没有上一个了"
+        });
+      } else if (nextIndex == len) {
+        this.$message({
+          type: "warning",
+          message: "没有下一个了"
+        });
+      } else {
+        this.$refs.multipleTable.toggleRowSelection(this.formUpdate);
+        this.handleSelectionChange([this.tableData[nextIndex]]);
+        this.$refs.multipleTable.toggleRowSelection(this.formUpdate);
+      }
+    },
     handleSuccess() {
       this.$message({
         message: "上传成功",
@@ -457,8 +499,7 @@ export default {
     },
     //右侧选择条件
     changeValue(val) {
-
-      console.log(this.value)
+      console.log(this.value);
     },
     //右侧选择条件
     changeFilterValue(val) {
@@ -571,7 +612,6 @@ export default {
                   type: "success",
                   message: "修改成功"
                 });
-                this.pageList();
               } else {
                 this.$alert("提交失败");
               }
@@ -580,8 +620,10 @@ export default {
               this.$alert("未知错误");
               //console.log("chucuole"+JSON.stringify(e))
             });
-          this.dialogFormVisibleUpdate = false;
-          this.reload();
+          if (this.closeDialog == "1") {
+            this.ruleFormUpdateNo();
+            this.reload();
+          }
         } else {
           return false;
         }
@@ -653,7 +695,7 @@ export default {
     //请求数据
     this.access_token = localStorage.getItem("access_token");
     this.search = this.getSearch;
-    this.changeFilterValue(this.getCateId)
+    this.changeFilterValue(this.getCateId);
     this.pageList();
   },
   destroyed() {}

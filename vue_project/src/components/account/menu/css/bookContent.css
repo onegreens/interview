@@ -120,3 +120,12 @@
 .el-table {
     font-weight: 900;
 }
+
+.div-close-dialog {
+    width: 30%;
+    float: left;
+    position: absolute;
+    text-align: left;
+    height: 40px;
+    line-height: 40px;
+  }

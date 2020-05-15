@@ -8,39 +8,58 @@
   background: linear-gradient(to right, #6fa2e0, #f5f5f5);
   margin-bottom: 10px;
 }
+
 .pageNew {
   float: left;
 }
+
 .pageLook {
   float: left;
   margin-left: 5px;
 }
+
 .pageUpdate {
   float: left;
   margin-left: 5px;
 }
+
 .pageDelete {
   float: left;
   margin-left: 5px;
 }
+
 .block {
   text-align: left;
   margin-top: 13px;
 }
+
 .item100 {
   width: 100%;
   display: inline-block;
   position: relative;
 }
+
 .el-dropdown {
   vertical-align: top;
 }
-.el-dropdown + .el-dropdown {
+
+.el-dropdown+.el-dropdown {
   margin-left: 15px;
 }
+
 .el-icon-arrow-down {
   font-size: 12px;
 }
+
 .el-table {
   font-weight: 900;
+}
+
+.div-close-dialog {
+  width: 30%;
+  float: left;
+  position: absolute;
+  text-align: left;
+  height: 40px;
+  line-height: 40px;
 }

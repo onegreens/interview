@@ -150,6 +150,7 @@
             v-model="formNew.chapterId"
             :options="treeData"
             :props="{ checkStrictly: true }"
+            :show-all-levels="false"
             @change="handleParentIdChange"
           ></el-cascader>
         </el-form-item>
@@ -158,10 +159,12 @@
         </el-form-item>
 
         <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formNew.content" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formNew.content" autosize auto-complete="off"></el-input> -->
+          <mavon-editor v-model="formNew.content" />
         </el-form-item>
         <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formNew.think" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formNew.think" autosize auto-complete="off"></el-input> -->
+          <mavon-editor v-model="formNew.think" />
         </el-form-item>
         <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
           <el-input type="number" v-model="formNew.degree" autosize auto-complete="off"></el-input>
@@ -184,7 +187,7 @@
       修改
     </el-button>
 
-    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate">
+    <el-dialog title="修改" :visible.sync="dialogFormVisibleUpdate" center width="80%">
       <h3 v-if="multipleSelection.length==0">请先选择一条信息修改</h3>
       <h3 v-else-if="multipleSelection.length>1">请选择一条信息修改</h3>
       <el-form :model="formUpdate" ref="ruleFormUpdate" v-else :rules="rulesUpdate">
@@ -207,28 +210,45 @@
           prop="name"
           v-if="!getChapterId"
         >
-          <el-cascader v-model="formUpdate.chapterId" :options="treeData"></el-cascader>
+          <el-cascader
+            v-model="formUpdate.chapterId"
+            :options="treeData"
+            :props="{ checkStrictly: true }"
+            :show-all-levels="false"
+            @change="handleParentIdChange"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
           <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
         </el-form-item>
         <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formUpdate.content" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formUpdate.content" autosize auto-complete="off"></el-input> -->
+          <mavon-editor v-model="formUpdate.content" />
         </el-form-item>
         <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
-          <el-input type="textarea" v-model="formUpdate.think" autosize auto-complete="off"></el-input>
+          <!-- <el-input type="textarea" v-model="formUpdate.think" autosize auto-complete="off"></el-input> -->
+          <mavon-editor v-model="formUpdate.think" />
         </el-form-item>
         <el-form-item label="重要程度" :label-width="formLabelWidth" class="item100" prop="answer">
           <el-input type="number" v-model="formUpdate.degree" autosize auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <div class="div-close-dialog" v-show="closeDialog == '1'">
+          <el-radio v-model="closeDialog" label="0">不关闭</el-radio>
+        </div>
+        <div class="div-close-dialog" v-show="closeDialog == '0'">
+          <el-radio v-model="closeDialog" label="1">关闭</el-radio>
+        </div>
+
         <el-button @click="ruleFormUpdateNo">取 消</el-button>
         <el-button
           type="primary"
           @click="ruleFormUpdate('ruleFormUpdate')"
           v-if="multipleSelection.length==1"
         >确 定</el-button>
+        <el-button type="primary" @click="nextItem(-1)">上一个</el-button>
+        <el-button type="primary" @click="nextItem(1)">下一个</el-button>
       </div>
     </el-dialog>
 
@@ -324,6 +344,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      closeDialog: "1",
       showArray: [
         { label: "标题", isShow: true },
         { label: "内容", isShow: true },
@@ -432,12 +453,13 @@ export default {
   methods: {
     ...mapMutations(["SET_PAGE"]),
     handleParentIdChange(value) {
+      console.info(value);
       if (this.dialogFormVisible) {
-        this.formNew.chapterId = value[0];
+        this.formNew.chapterId = value[value.length - 1];
       }
 
       if (this.dialogFormVisibleUpdate) {
-        this.formUpdate.chapterId = value[0];
+        this.formUpdate.chapterId = value[value.length - 1];
       }
     },
     //筛选
@@ -644,7 +666,6 @@ export default {
                   type: "success",
                   message: "修改成功"
                 });
-                this.reload();
               } else {
                 this.$alert("提交失败");
               }
@@ -653,7 +674,10 @@ export default {
               this.$alert("未知错误");
               //console.log("chucuole"+JSON.stringify(e))
             });
-          this.dialogFormVisibleUpdate = false;
+          if (this.closeDialog == "1") {
+            this.dialogFormVisibleUpdate = false;
+            this.reload();
+          }
         } else {
           return false;
         }
@@ -708,6 +732,33 @@ export default {
       this.formLook = Selection[0];
       this.formUpdate = Selection[0];
       this.formDelete = Selection[0];
+    },
+    nextItem(next) {
+      var cur = this.formUpdate;
+      var nextIndex = 0;
+      var len = this.tableData.length;
+      for (let index = 0; index < len; index++) {
+        const element = this.tableData[index];
+        if (cur.id == element.id) {
+          nextIndex = index + next;
+          break;
+        }
+      }
+      if (nextIndex == -1) {
+        this.$message({
+          type: "warning",
+          message: "没有上一个了"
+        });
+      } else if (nextIndex == len) {
+        this.$message({
+          type: "warning",
+          message: "没有下一个了"
+        });
+      } else {
+        this.$refs.multipleTable.toggleRowSelection(this.formUpdate);
+        this.handleSelectionChange([this.tableData[nextIndex]]);
+        this.$refs.multipleTable.toggleRowSelection(this.formUpdate);
+      }
     },
     //分页
     handleSizeChange(val) {

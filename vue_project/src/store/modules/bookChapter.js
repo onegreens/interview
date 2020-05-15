@@ -19,10 +19,10 @@ const bookChapter = {
     },
     getters: {
         getChapterId(state) {
-            return state.chapterId
+            return state.chapterId || '';
         },
         getChapterName(state) {
-            return state.chapterName
+            return state.chapterName || '';
         }
     },
     actions: {

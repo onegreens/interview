@@ -30,6 +30,12 @@ import store from './store'
 //Vue.prototype.$qs = qs
 import axios from 'axios'
 
+// 引入markdown编辑器
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+// use
+Vue.use(mavonEditor)
+
 
 //引入echarts 內容過大
 // import echarts from 'echarts'

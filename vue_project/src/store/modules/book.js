@@ -15,6 +15,7 @@ const book = {
         SET_BOOK: (state, book) => {
             state.bookId = book.id;
             state.bookName = book.name;
+            store.commit('SET_BOOK_CHAPTER',{});
         }
     },
     getters: {
