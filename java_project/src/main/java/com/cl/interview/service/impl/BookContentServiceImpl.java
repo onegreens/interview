@@ -81,6 +81,7 @@ public class BookContentServiceImpl implements BookContentService {
 
     @Override
     public BookContentPo save(BookContentPo obj) {
+        log.info(obj.toString());
         obj.setCreateTime(Calendar.getInstance().getTime());
         return dao.save(obj.toObject()).toObject();
     }

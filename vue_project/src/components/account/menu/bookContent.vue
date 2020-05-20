@@ -125,7 +125,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center>
+    <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center  width="80%">
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
         <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
           <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
@@ -219,7 +219,7 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
-          <el-input v-model="formUpdate.title" auto-complete="off" disabled></el-input>
+          <el-input v-model="formUpdate.title" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
           <!-- <el-input type="textarea" v-model="formUpdate.content" autosize auto-complete="off"></el-input> -->

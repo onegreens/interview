@@ -173,6 +173,7 @@
             v-model="formUpdate.parentId"
             :options="treeData"
             :props="{ checkStrictly: true }"
+            @change="handleParentIdChange"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="页码" :label-width="formLabelWidth" class="item100" prop="page">
@@ -389,6 +390,7 @@ export default {
       this.$router.push({ path: "/user/bookContent" });
     },
     handleParentIdChange(value) {
+      console.info(value);
       if (this.dialogFormVisible) {
         this.formNew.parentId = value[0];
       }

@@ -283,7 +283,7 @@ public class BookChapterServiceImpl implements BookChapterService {
 
     @Transient
     public String getWhereSql(BookChapterPo t) {
-        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.parentId is null");
+        StringBuffer sb = new StringBuffer("where 1 = 1 and entity.level = 1 ");
         if (!StringUtils.isEmpty(t.getBookId()))
             sb.append(" and bookId = :bookId");
         return sb.toString();
