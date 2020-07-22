@@ -83,6 +83,7 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Override
     public BookChapterPo save(BookChapterPo obj) {
         BookChapterEntity entity = obj.toObject();
+        entity.setChildren(null);
         return dao.save(entity).toObject();
     }
 
@@ -210,7 +211,7 @@ public class BookChapterServiceImpl implements BookChapterService {
     @Override
     public List<Map> treeData(String bookId) {
         if (posCache == null) {
-            posCache = DaoUtil.convertDataList(this.dao.findByParentId(null));
+            posCache = DaoUtil.convertDataList(this.dao.findByLevel(1));
         }
         return toMap(posCache, bookId);
     }

@@ -31,7 +31,7 @@ public class BookChapterEntity implements ToObject<BookChapterPo> {
     private String id;
 
     @JoinColumn(name = "PARENT_ID", insertable = false, nullable = true, updatable = false)
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @NotFound(action = NotFoundAction.IGNORE)
     private List<BookChapterEntity> children;
 

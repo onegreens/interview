@@ -25,6 +25,22 @@ const base = {
             return state.pageSize
         }
     },
-    actions: {}
+    actions: {
+        toJson({
+            commit,
+            state
+        }, params) {
+            return new Promise((resolve, reject) => {
+                api({
+                    url: `/util/doJson?alias=`+params.alias,
+                    method: 'get'
+                }).then(data => {
+                    resolve(data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+    }
 }
 export default base

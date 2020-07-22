@@ -1,5 +1,6 @@
 package com.cl.interview.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.cl.interview.common.HttpResp;
 import com.cl.interview.common.IoTErrorCode;
 import com.cl.interview.common.MDData;
@@ -16,6 +17,7 @@ import com.cl.interview.util.ClassUtils;
 import com.cl.interview.util.DaoUtil;
 import com.cl.interview.util.MDDataUtil;
 import com.cl.interview.util.SerializableFile;
+import com.fasterxml.jackson.core.JsonGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -185,7 +187,7 @@ public class BookServiceImpl implements BookService {
             params = getWhereParam(obj);
         }
         if (search != null && search.length() > 0) {
-            hql.append("and entity.title like :search");
+            hql.append("and entity.name like :search");
             params.put("search", "%" + search + "%");
         }
         String queryHql = hql.toString();
@@ -212,7 +214,7 @@ public class BookServiceImpl implements BookService {
 
     @Transient
     public String getWhereSql(BookPo t) {
-        StringBuffer sb = new StringBuffer("where 1=1");
+        StringBuffer sb = new StringBuffer("where 1=1 ");
         return sb.toString();
     }
 }

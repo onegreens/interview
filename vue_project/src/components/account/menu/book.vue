@@ -73,6 +73,10 @@
           <el-dropdown-item command="md">
             <el-button size="small" type="text">MD</el-button>
           </el-dropdown-item>
+          <el-dropdown-item command="json">
+            <el-button size="small" type="text">JSON</el-button>
+          </el-dropdown-item>
+          
           <el-dropdown-item command="download">
             <el-button size="small" type="text">下载模板</el-button>
           </el-dropdown-item>
@@ -215,6 +219,13 @@
         :filters="types"
         :filter-method="filterHandler"
         width="180"
+        v-if="showArray[1].isShow"
+      ></el-table-column>
+      <el-table-column
+        prop="noteNum"
+        :show-overflow-tooltip="true"
+        label="笔记数量"
+        width="180"
         v-if="showArray[2].isShow"
       ></el-table-column>
     </el-table>
@@ -243,9 +254,8 @@ export default {
     return {
       showArray: [
         { label: "书名", isShow: true },
-        { label: "解答", isShow: true },
         { label: "分类", isShow: true },
-        { label: "链接", isShow: true }
+        { label: "笔记数量", isShow: true }
       ],
       tableDataArr: [],
       //右侧选择项
@@ -354,8 +364,11 @@ export default {
       if (command == "out") {
         this.outData();
       }
-      if (command == "md") {
+      else if (command == "md") {
         this.outMD();
+      }
+      else if (command == "json") {
+        this.outJSON();
       }
     },
 
@@ -409,6 +422,26 @@ export default {
       this.page.bookId = this.formLook.id;
       this.$store
         .dispatch("bookToMD", this.page)
+        .then(res => {
+          if (res.code == 0) {
+            this.$message({
+              type: "success",
+              message: "导出成功"
+            });
+          } else {
+            this.$message({
+              type: "warning",
+              message: "系统错误"
+            });
+          }
+        })
+        .catch(e => {
+          this.$alert("未知错误");
+        });
+    },
+    outJSON() {
+      this.$store
+        .dispatch("toJson", {alias:'book'})
         .then(res => {
           if (res.code == 0) {
             this.$message({
@@ -482,11 +515,9 @@ export default {
           }
         })
         .catch(e => {
-          
           console.info("error");
           this.$alert("未知错误");
         });
-
     },
     //提交新建信息
     submitForm(formName) {

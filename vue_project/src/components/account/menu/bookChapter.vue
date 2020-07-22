@@ -115,7 +115,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建书籍" :visible.sync="dialogFormVisible" center>
+    <el-dialog title="新建章节" :visible.sync="dialogFormVisible" center>
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
         <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
           <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
@@ -321,7 +321,6 @@ export default {
       rulesUpdate: {
         name: [{ required: true, message: "请输入章节", trigger: "blur" }],
         page: [{ required: true, message: "请输入书籍名", trigger: "blur" }],
-
         sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       //查看的内容
@@ -566,6 +565,7 @@ export default {
     //提交新建信息
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
+        console.info(valid);
         if (valid) {
           //提交时验证章节是否重复
           this.formNew.bookId = this.getBookId;
@@ -573,6 +573,7 @@ export default {
           this.$store
             .dispatch("createBookChapter", this.formNew)
             .then(res => {
+              this.submitFormNo();
               //console.log(res)
               if (res.code == 0) {
                 this.$message({
@@ -589,14 +590,10 @@ export default {
               this.$alert("未知错误");
               //console.log("chucuole"+JSON.stringify(e))
             });
+        } else {
+          this.$alert("添加失败");
         }
       });
-      this.dialogFormVisible = false;
-      this.formNew = {
-        name: "",
-        page: "",
-        sort: ""
-      };
     },
     //取消新建信息时情空
     submitFormNo() {

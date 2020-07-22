@@ -29,6 +29,23 @@ public class MDDataUtil {
         }
     }
 
+    public static void outFile(String filePath, String data) {
+        File file = new File(filePath);
+        try {
+            if(!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            OutputStream out = new FileOutputStream(file );
+            out.write(data.getBytes());
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void outFile(OutputStream out, MDData data) throws IOException {
         if (data == null) {
             return;
