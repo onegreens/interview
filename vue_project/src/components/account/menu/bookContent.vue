@@ -125,7 +125,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center  width="80%">
+    <el-dialog title="新建笔记" :visible.sync="dialogFormVisible" center width="80%">
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
         <el-form-item label="书名" :label-width="formLabelWidth" class="item100" prop="bookName">
           <el-input v-model="getBookName" :disabled="true" auto-complete="off"></el-input>
@@ -160,7 +160,7 @@
 
         <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
           <!-- <el-input type="textarea" v-model="formNew.content" autosize auto-complete="off"></el-input> -->
-          <mavon-editor v-model="formNew.content" />
+          <mavon-editor v-model="formNew.content" ref="addmd" @imgAdd="onImgAdd" />
         </el-form-item>
         <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
           <!-- <el-input type="textarea" v-model="formNew.think" autosize auto-complete="off"></el-input> -->
@@ -223,7 +223,7 @@
         </el-form-item>
         <el-form-item label="内容" :label-width="formLabelWidth" class="item100" prop="answer">
           <!-- <el-input type="textarea" v-model="formUpdate.content" autosize auto-complete="off"></el-input> -->
-          <mavon-editor v-model="formUpdate.content" />
+          <mavon-editor v-model="formUpdate.content" ref="updatemd" @imgAdd="onImgAdd2" />
         </el-form-item>
         <el-form-item label="见解" :label-width="formLabelWidth" class="item100" prop="answer">
           <!-- <el-input type="textarea" v-model="formUpdate.think" autosize auto-complete="off"></el-input> -->
@@ -801,8 +801,67 @@ export default {
         .catch(e => {
           this.$alert("未知错误");
         });
+    },
+    onImgAdd2(pos, file) {
+      var _this = this;
+      var fd = new FormData();
+      fd.append("image", file);
+      fd.append("Authorization", this.access_token);
+      this.$store
+        .dispatch("uploadImage", fd)
+        .then(res => {
+          if (res.code == 0) {
+            this.$message({
+              message: "上传成功",
+              type: "success"
+            });
+            console.info(res);
+            _this.$refs.updatemd.$imglst2Url([[pos, res.data[0]]]);
+          } else {
+            this.$message({
+              message: "上传失败",
+              type: "warning"
+            });
+          }
+        })
+        .catch(e => {
+          this.$message({
+            message: "上传失败",
+            type: "warning"
+          });
+        });
+    },
+    onImgAdd(pos, file) {
+      var _this = this;
+      var fd = new FormData();
+      fd.append("image", file);
+      fd.append("Authorization", this.access_token);
+      this.$store
+        .dispatch("uploadImage", fd)
+        .then(res => {
+          if (res.code == 0) {
+            this.$message({
+              message: "上传成功",
+              type: "success"
+            });
+            console.info(res);
+            _this.$refs.addmd.$imglst2Url([[pos, res.data[0]]]);
+          } else {
+            this.$message({
+              message: "上传失败",
+              type: "warning"
+            });
+          }
+        })
+        .catch(e => {
+          this.$message({
+            message: "上传失败",
+            type: "warning"
+          });
+        });
     }
   },
+
   created() {
     //请求数据
     this.access_token = localStorage.getItem("access_token");

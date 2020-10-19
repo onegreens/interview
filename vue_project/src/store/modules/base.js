@@ -41,6 +41,21 @@ const base = {
                 })
             })
         },
+        uploadImage({ commit, state }, page) {
+            let Authorization = page.get("Authorization")
+            axios.defaults.headers['Authorization'] = `bearer ${Authorization}`
+            return new Promise((resolve,reject) => {
+                api({
+                    url: `/util/uploadImage`,
+                    method: "post",
+                    data: page,
+                }).then(data => {
+                    resolve(data);
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+        },
     }
 }
 export default base

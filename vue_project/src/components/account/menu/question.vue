@@ -120,7 +120,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="新建习题" :visible.sync="dialogFormVisible" center>
+    <el-dialog title="新建习题" :visible.sync="dialogFormVisible" center  width="80%">
       <el-form :model="formNew" ref="ruleForm" :rules="rulesNew">
         <el-form-item label="标题" :label-width="formLabelWidth" class="item100" prop="title">
           <el-input v-model="formNew.title" auto-complete="off"></el-input>
