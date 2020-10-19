@@ -10,4 +10,11 @@ public class BaseConfig {
 
     @Value("${web.file.path}")
     private String webFilePath;
+
+
+    @Value("${web.image.path}")
+    private String webImagePath;
+
+    @Value("${web.image.url}")
+    private String webImageUrl;
 }

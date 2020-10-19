@@ -16,6 +16,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class QuestionController {
         QuestionPo po = new QuestionPo();
         po.setCateId(cateId);
         try {
-            resp.setData(service.getDataByPage(pageNo, pageSize, po, new ArrayList<String>(), search));
+            resp.setData(service.getDataByPage(pageNo, pageSize, po, Arrays.asList("createTime"), search));
         } catch (Exception e) {
             resp.setCode(IoTErrorCode.server_error.getErrorCode());
             resp.setMessage("习题信息列表 查询失败，数据库出错 e= " + e.getMessage());

@@ -3,6 +3,8 @@ server:
   port: 8090
 
 spring:
+  thymeleaf:
+    cache: false
   profiles:
     active: prod
   datasource:
@@ -31,7 +33,18 @@ idGenerator:
   workId: 1
   dataId: 1
 
+devtools:
+    restart:
+    #热部署生效
+    enabled: true
+    #设置重启的目录
+    additional-paths: resources/**,static/**,templates/**
+    #该目录下的内容修改不重启
+    exclude: data/**
 
 web:
   file:
-    path: /home/fuyun/github/interview/java_project/src/main/web
+    path: D:\project\interview\project\interview\java_project\src\main\web
+  image:
+    url: http://localhost:8090/image/
+    path: D:\project\interview\project\interview\java_project\src\main\resources\static\image
